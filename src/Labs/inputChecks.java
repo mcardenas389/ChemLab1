@@ -1,91 +1,105 @@
+/*
+ * inputChecks.java
+ * 
+ * This class contains generic checks used for the various labs
+ * that will need to be graded across the two courses of chemistry.
+ * It also has containers that stores various relevant data and
+ * metadata for the labs.
+ * 
+ */
+
 package Labs;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
-//import blackboard.data.course.CourseMembership;
-
- import blackboard.persist.Id;
-import blackboard.platform.context.Context;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class inputChecks {
-    
-    protected int dataX;
-    protected int dataY;
-    
-    protected String data[][];
-    protected String type[][];
-    protected String error[][];   
-    protected String isCorrect[][];
-    protected String key[][];
-    protected double grade[][];
+public class inputChecks 
+{    
+    protected int dataX; //number of rows
+    protected int dataY; //number of columns
+    protected String data[][]; //stores lab data inputed by the student
+    protected String error[][]; //stores error messages
+    protected String type[][]; //stores data type; used in front end
+    protected String isCorrect[][]; //keeps track of correctness of data; stores HTML values for front end
+    protected String key[][]; //stores correct answers for the lab
+    protected String grade[][]; //stores the grade values
+    protected String errorTypes[] = new String[]{"s.f. error", "calculation error", "unit error", "error"}; //container for error types
     protected String errorMsg = "&#10007;"; //✗ (hex: &#x2717; / dec: &#10007;): ballot x
     protected String correctMsg = "&#10004;"; // ✔ (hex: &#x2714; / dec: &#10004;): heavy check mark
+    protected String tableName; //stores the name of the data table
     
-    DataLoader load;
-    DataPersister save;
-	private static final Logger LOGGER = LoggerFactory.getLogger(inputChecks.class.getName());
-
- 
+    //private DataLoader load;
+    //private DataPersister save;
     
-    public inputChecks(Context ctx, int X, int Y, String labname, String userid, String courseid)
+    //constructor that also calls initData()
+	public inputChecks(String tableName, int X, int Y, 
+			String userid, String courseid, int labNumber)
     {
         dataX = X;
         dataY = Y;
-        load = new DataLoader();
-        save = new DataPersister();
+        //load = new DataLoader();
+        //save = new DataPersister();
         
-        data = new String[dataX][dataY];
-        type = new String[dataX][dataY];
-        error = new String[dataX][dataY];
-        isCorrect = new String[dataX][dataY];
-        key = new String[dataX][dataY];
-        grade = new double[dataX][dataY];
+        data = new String[dataX][dataY]; //stores lab data
+        error = new String[dataX][dataY]; //stores error messages
+        isCorrect = new String[dataX][dataY]; //keeps track of correct answers
+        key = new String[dataX][dataY]; //answer key
+        grade = new String[dataX][dataY]; //the grade given for each correct answer
 
-         
-        String tempData;
-        tempData = load.loadData(labname, userid, courseid);
-        LOGGER.info("tempData " + tempData + " labname " + labname);
+        
+        String tempData = "108, , ,22, , ,33.43,g,4,39.87,g,4,33.5237,g,6,0.5319,g,4,0.5321,g,4,0.5321,g,4,0.9067,g,4,0.4145,g,4,0.5320,g,4,0.4922,g,4";
+        //String tempData = "";
+        //tempData = load.restoreLab(tableName, labNumber, userid, courseid); //get lab data
+        
         initData(tempData);
     }
 
-    
+    //parses string of submitted user data and stores it within data[][] array
     private void initData(String tempData)
     {
-        for (int i = 0; i < dataX; i++)
+    	String temp = "";
+    	
+        for(int i = 0; i < dataX; ++i)
         {
-            for (int j = 0; j < dataY; j++)
+            for(int j = 0; j < dataY; ++j)
             {
-                //get first data and remove
-                String temp = "";
-                while (tempData.length() > 0 && !tempData.substring(0,1).equals(","))
+                //get substring
+            	while(tempData.length() > 0 && !tempData.substring(0,1).equals(","))
                 {
-                    temp += "" + tempData.substring(0,1);
+                    temp += tempData.substring(0,1);
                     tempData = tempData.substring(1);
                 }
-                if (tempData.length() > 0 && tempData.substring(0,1).equals(","))
+                
+            	//remove comma
+                if(tempData.length() > 0 && tempData.substring(0,1).equals(","))
                 {
-                    //remove the ,
                     tempData = tempData.substring(1);
                 }
-                if (temp.length() > 0)
+                
+                if(temp.length() > 0)
                 {
-                    data[i][j] = temp;
+                    data[i][j] = temp.trim();
                 }
                 else
                 {
                     data[i][j] = "";
                 }
                 
-                type[i][j] = "";
                 error[i][j] = "";
                 isCorrect[i][j] = "";
+                //type[i][j] = "";
                 key[i][j] = "";
-                grade[i][j] = 0.0;
+                grade[i][j] = "0.0";
+                temp = "";
             }
         } 
+    }
+    
+    public int getDataX()
+    {
+    	return dataX;
+    }
+    
+    public int getDataY()
+    {
+    	return dataY;
     }
     
     public void setData(int x, int y, String info)
@@ -93,7 +107,7 @@ public class inputChecks {
         data[x][y] = info;
     }
     
-    public String getData (int x, int y)
+    public String getData(int x, int y)
     {
         return data[x][y];
     }
@@ -128,6 +142,16 @@ public class inputChecks {
         return isCorrect[x][y];
     }
     
+    public void setGrade(int x, int y, String info)
+    {
+    	grade[x][y] = info;
+    }
+    
+    public String getGrade(int x, int y)
+    {
+    	return grade[x][y];
+    }
+    
     public void setKey(int x, int y, String info)
     {
         key[x][y] = info;
@@ -138,6 +162,17 @@ public class inputChecks {
         return key[x][y];
     }
     
+    public void setTableName(String t)
+    {
+    	tableName = t;
+    }
+    
+    public String getTableName()
+    {
+    	return tableName;
+    }
+    
+    //checks if the input is a standard unit
     protected void unitStandard (int x, int y)
     {
         String temp;
@@ -216,23 +251,23 @@ public class inputChecks {
         }
     }
     
-    protected void doubleStandard (int x, int y)
+    //checks if there are multiple decimal points
+    protected void doubleStandard(int x, int y)
     {
         String temp = data[x][y];
         boolean hasDot = false;
         
         //check for numbers and . only
-        //check for multiple .
-        
+        //check for multiple .        
         for(int i = 0; i < temp.length(); i++)
         {
-            if (temp.charAt(i) == '.')
+            if(temp.charAt(i) == '.')
             {
-                if (hasDot)
+                if(hasDot)
                 {
-                error[x][y] = "Invalid character: '.'";
-                data[x][y] = "";
-                return;
+                	error[x][y] = "Invalid character: '.'";
+                	data[x][y] = "";
+                	return;
                 }
                 else
                 {
@@ -240,6 +275,7 @@ public class inputChecks {
                 }
             }
             
+            //check if there is a non-number character
             if (temp.charAt(i) != '.' && (int)temp.charAt(i) < 48 || (int)temp.charAt(i) > 57)
             {
                 error[x][y] = "Invalid character: '" + temp.charAt(i) + "'";
@@ -249,14 +285,14 @@ public class inputChecks {
         }
     }
     
+    //checks for invalid characters
     protected void integerStandard (int x, int y)
     {
-        String temp = data[x][y];
-        
+        String temp = data[x][y];        
                 
         for(int i = 0; i < temp.length(); i++)
         {
-            if ((int)temp.charAt(i) < 48 || (int)temp.charAt(i) > 57)
+            if((int)temp.charAt(i) < 48 || (int)temp.charAt(i) > 57)
             {
                 error[x][y] = "Invalid character: '" + temp.charAt(i) + "'";
                 data[x][y] = "";
@@ -265,67 +301,112 @@ public class inputChecks {
         }
     }
     
-    protected int getSigFigs (int x, int y)
+    public static String setSigFigs(String x, int numberSF)
     {
-        return getSigFigs(getData(x,y));
-    }
+    	int a = 0;
+    	int b = 0;
+        int lastDigit;
+    	int L =  x.length();
+        boolean roundUp;
+        String roundedLast;
+    	
+    	for(int i = 0; i < L; i++) //counts all chars except decimal
+    	{
+    		if(x.charAt(i) == '.')
+    		{
+    			a = i; //a = position of decimal
+    		}
+    		else
+    		{
+    			b++;
+    		}
+    	}
+    	
+    	if(a == 1 && x.charAt(0) == '0') //removes zeroes between dec and 1st non-zero digit in cases starting with "0."
+    	{
+    		int c = 2;
+    		b--;
+    		
+    		while(x.charAt(c) == '0')
+    		{
+    			b--;
+    			c++;
+    		}
+    	}
 
-    protected int getSigFigs (String in)
-    {
-        int sigFigs = 0;
-        String num = in;
-        int length;
-        
-        if (num != null && num.length() != 0)
-        {
-            length = num.length();
-
-            //remove leading zeros
-            int i = 0;
-            while (num.charAt(i) == '0')
-            {
-               i++;
-            }
-            //check to see if there is a .
-            //inc sig figs
-            boolean flag = false;
-            while ( i < length)
-            {
-                if (num.charAt(i) == '.')
+    	while(b != numberSF)
+    	{
+    		if(b < numberSF)
+    		{
+    			x += '0'; //adds a '0' to end of string
+    			b++;
+    		}
+    		else
+    		{
+    			lastDigit = Character.getNumericValue(x.charAt(x.length()-1));
+                        
+                if(lastDigit > 4)
                 {
-                    flag = true;
-                    i++;
+                	roundUp = true;
                 }
                 else
                 {
-                    i++;
-                    sigFigs++;
+                	roundUp = false;
                 }
-            }
-            //remove trailing zero's if not a decimal
-            if (!flag)
-            {
-                i = length;
-                while (i < length && num.charAt(i) == '0')
+                
+                x = x.substring(0, x.length() - 1);	//deletes last char in string
+                        
+                L--;
+                b--;
+                            
+                if(roundUp==true)
                 {
-                    sigFigs --;
+                	lastDigit = Character.getNumericValue(x.charAt(x.length()-1));
+                    lastDigit++;
+                    x = x.substring(0, x.length() - 1);	//deletes last char in string
+                    roundedLast = Integer.toString(lastDigit);
+                    x = x + roundedLast;
                 }
-            }
-
-            return sigFigs;
+    		}
+    	}
+    		
+    	return x;
+    }
+    
+    //returns the number of significant figures in a number
+    //returns -1 or -2 if there is an error
+    protected int getSigFigs(String in)
+    {
+        String num = in;
+        int i = 1;
+        
+        if(num != null && num.length() != 0)
+        {
+        	//if-else might not be needed if front end can ensure the right input
+        	if(in.contains("."))
+        	{
+        		if(in.startsWith("0") || in.startsWith("."))
+        		{
+        			i = in.indexOf('.');
+        			
+        			while(in.charAt(++i) == '0') { }
+        		}
+        	}
+        	else
+        	{
+        		return (-2); //not a decimal value
+        	}
         }
         else
         {
-            return (-1);
+        	return (-1); //not a number
         }
+        
+        return in.length() - i;
     }
     
-    protected int getDecPlaces (int x, int y)
-    {
-        return getDecPlaces(x, getData(x,y));
-    }
-    
-    protected int getDecPlaces (String in)
+    //returns the number of digits after the decimal point
+    protected int getDecPlaces(String in)
     {
     	int decPlace = 0;
     	String num = in;
@@ -333,15 +414,20 @@ public class inputChecks {
         if (num != null && num.length() != 0)
         {
         	//get the decPlace
-            decPlace = (num.length() - num.indexOf(".")) -1;
+            decPlace = (num.length() - num.indexOf(".")) - 1;
         }
-    	return decPlace;
+    	
+        return decPlace;
     }
-    //get check and compare decimal places
-    protected int getDecPlaces (int x, String in)
+    
+    //not used
+    //check and compare decimal places
+    /*
+    protected int getDecPlaces(int x, String in)
     {
         int decPlace = 0; 
         String num = in;
+        
         if (num != null && num.length() != 0)
         {
             //get the decPlace
@@ -389,7 +475,7 @@ public class inputChecks {
             {
                 decPlace ++;
             }
-            */
+            
             return decPlace;   
         }
         else
@@ -397,50 +483,37 @@ public class inputChecks {
         	return (-1);
         }
     }
+    */
     
-    protected String setToDecPlaces(String in, int places)
+    //formats decimal value into a given number of decimal places
+    protected String setDecPlaces(String in, int places)
     {
-        /*int i = 0;
-        
-        //find .
-        while (i < in.length() && in.charAt(i) != '.')
-        {
-            i++;
-        }
-        
-        //shorten it
-        while (getDecPlaces(in) > places)
-        {
-            in = in.substring(0,in.length() - 2);
-        }
-        
-        //pad it
-        while(getDecPlaces(in) < places)
-        {
-            in += "0";
-        }
-        
-        return in;
-        */
         String format = "%." + places + "f";
-        String.format( format, Double.parseDouble(in));
+        in = String.format(format, Double.parseDouble(in));
         return in;
     }
-    //check and set the decimal format for 3 or 4
+    
+    //not used    
+    //check and set the decimal format for 1 to 4 places
+    /*
     protected String setDecimalFormat(String in, int places)
     {
     	String format = "#.";
-    	for(int i=0; i < places; i++)
+    	
+    	for(int i = 0; i < places; ++i)
     	{
     		format = format + "#";
     	}
+    	
     	DecimalFormat df = new DecimalFormat(format);
     	df.setRoundingMode(RoundingMode.HALF_UP);
+    	
     	Double temp = Double.parseDouble(in);
     	Double temp1 = temp.doubleValue(); 
     	String s = df.format(temp1);
     	StringBuilder s1 = new StringBuilder(s);
     	int decimalPlace = getDecPlaces(s);
+    	
     	//for lab:1 result part only (apply with only 4 decimal values)
     	if (decimalPlace == 3)
     	{
@@ -464,87 +537,30 @@ public class inputChecks {
     	}
     	return s;
     }
-    protected void gradeLab()
-    {
-        //compare data to key
-        for (int i = 0; i < dataX; i ++)
-        {
-            for (int j = 0; j < dataY; j++)
-            {
-                if (data[i][j] != null && key[i][j] != null)
-                {
-                    if (key[i][j].equals("WRONG"))
-                    {
-                        grade[i][j] = 0;
-                        if (error[i][j].equals(""))
-                        {
-                            error[i][j] += errorMsg;
-                        }
-                    }
-                    else if (j != 0 && data[i][j].equals(key[i][j]) || key[i][j].equals("*"))
-                    {
-                    	grade[i][j] = 1;
-                    	isCorrect[i][j] = correctMsg;
-                    } 
-                    //Weight column
-                    else if (j == 0 && (i > 1 && i < 10))
-                    {
-                    	String d = Integer.toString(getDecPlaces(i,getData(i,0)));
-                    	
-                        if(d.equals(key[i][0]))
-                        {
-                        	grade[i][0] = 1;
-                        	isCorrect[i][j] = correctMsg;
-                        }
-                        else
-                        {
-                        	grade[i][j] = 0;
-                        	error[i][j] += errorMsg;
-                        }
-                    }
-                    //Results
-                    else if ((j == 0 && i > 9 && i < 12) && Double.compare(Double.parseDouble(data[i][j]), Double.parseDouble(key[i][j])) == 0 )
-                    {
-                    	grade[i][0] = 1;
-                    	isCorrect[i][j] = correctMsg;
-                    }
-                    //Results: Error 	
-                    else if ((j == 0 && i > 9 && i < 12) && Double.compare(Double.parseDouble(data[i][j]), Double.parseDouble(key[i][j])) != 0)
-                    {
-                    	grade[i][0] = 0;
-                    	error[i][j] += "X("+ setDecimalFormat(key[i][j], 4) +")";
-                    }
-                    else
-                    {
-                        grade[i][j] = 0;
-                        //if (error[i][j].equals(""))
-                        {
-                            error[i][j] += errorMsg;
-                        }
-                    }
-                }
-            }        
-        }
-    }
+    */
     
-    public void save(String labname, String userid, String courseid)
+    //called from front end; stores lab data into table
+    //does not submit for grading
+    public void save(int labNumber, String userid, String courseid)
     {
         //build string of data to save
-        String theString = "";
+        String inData = "";
         
         for (int i = 0; i < dataX; i++)
         {
             for (int j = 0; j < dataY; j++)
             {
-                theString += data[i][j];
+                inData += data[i][j];
+                
                 if (i + j < dataX + dataY - 2)
                 {
-                    theString += ",";
+                    inData += ",";
                 }
             }
         }
-         //call function
-        save.saveData(labname, theString, userid, courseid);
+        
+        //save to back end
+        //save.saveData(tableName, labNumber, userid, courseid, inData);
     }
     
     public void check()
@@ -580,9 +596,6 @@ public class inputChecks {
                 }           
             }
         }
-
-        buildKey();
-        gradeLab();
     }
 
     public void clear()
@@ -618,39 +631,60 @@ public class inputChecks {
         }
     }
     
-    public void submit(Context ctx, String labname, String jspname)
+    //called from front end; stores lab data and relevant metadata
+    //submits for grading
+    public void submit(int labNumber, String userid, String courseid, double gradeTotal)
     {
-        //call save and then save grade
-        save(labname, ctx.getUserId().toExternalString(), ctx.getCourseId().toExternalString());
-
-        //build string of grade to save
-        String theString = "";
+        //build strings for lab data and metadata
+        String inData = "";
+        String saveIsCorrect = "";
+        String saveErrorMsgs = "";
+        String saveScores = "";
+        String saveKey = "";
         
         for (int i = 0; i < dataX; i++)
         {
             for (int j = 0; j < dataY; j++)
             {
-                theString += grade[i][j];
+                inData += data[i][j];
+                saveIsCorrect += isCorrect[i][j];
+                saveErrorMsgs += error[i][j];
+                saveScores += grade[i][j];
+                saveKey += key[i][j];
+                
                 if (i + j < dataX + dataY - 2)
                 {
-                    theString += ",";
+                    inData += ",";
+                    saveIsCorrect += ",";
+                    saveErrorMsgs += ",";
+                    saveScores += ",";
+                    saveKey += ",";
                 }
             }
         }
-
-        //call function
-        save.saveGrade(theString);
+        
+        saveScores += "," + gradeTotal;
+        /*
+        boolean flag = save.submitData(tableName, labNumber, userid, courseid, 
+        		inData, saveIsCorrect, saveErrorMsgs, saveScores, saveKey);
+        
+        if(flag)
+        	LOGGER.debug("Data submitted.");
+        */
+        //save.saveGrade(theString);
 
         //set submitted
-        save.submitted(ctx, labname, jspname);
+        //save.submitted(ctx, labname, jspname);
     }
 
     protected void buildKey()
     {
+    	
     }
+    /*
     public void clearAttempt(Context ctx, String uid, String labname)
     {
     	save.clearAttempt(ctx, uid, labname);
     }
+    */
 }
-    
