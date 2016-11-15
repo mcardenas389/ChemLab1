@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package Labs;
 
 import java.sql.Connection;
@@ -44,58 +45,71 @@ import blackboard.platform.plugin.PlugInUtil;
  * @author SJ
  *
  */
- public class GradeLogistics {
+ public class GradeLogistics 
+ {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GradeLogistics.class.getName());
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(GradeLogistics.class.getName());
-
-
-	public GradeLogistics() {
+	public GradeLogistics()
+	{
 
 	}
 
+	//delete an entire table
 	// Use this function only if you know what you are doing
-	public void delete(String labname) {
+	public void delete(String tableName)
+	{
 		ConnectionManager cManager = null;
 		Connection conn = null;
 
-		try {
+		try
+		{
 			cManager = BbDatabase.getDefaultInstance().getConnectionManager();
 			conn = cManager.getConnection();
 			StringBuffer queryString = new StringBuffer("");
-			queryString.append("DROP TABLE " + labname + " PURGE");
+			
+			queryString.append("DROP TABLE " + tableName + " PURGE");
 
 			PreparedStatement deleteQuery = conn.prepareStatement(queryString
 					.toString());
+			
 			deleteQuery.executeUpdate();
+			
 			PreparedStatement deleteSeq = conn
-					.prepareStatement("DROP SEQUENCE " + labname + "_seq");
+					.prepareStatement("DROP SEQUENCE " + tableName + "_seq");
+			
 			deleteSeq.executeUpdate();
 
 			LOGGER.info("dropped all tables");
-		} catch (java.sql.SQLException sE) {
-
+		} 
+		catch(java.sql.SQLException sE) 
+		{
 			LOGGER.error(sE.getMessage());
 			sE.printStackTrace();
-
-		} catch (ConnectionNotAvailableException cE) {
-
+		}
+		catch(ConnectionNotAvailableException cE) 
+		{
 			LOGGER.error(cE.getMessage());
 			cE.printStackTrace();
-
-		} finally {
-			if (conn != null) {
+		}
+		finally
+		{
+			if (conn != null)
+			{
 				cManager.releaseConnection(conn);
 			}
 		}
-
 	}
 
-	public void createTrigger(String labname) {
+	//commented out because it is not supported in the database
+	//creates a trigger in the table that creates a new primary key when a new insert occurs
+	/*
+	public void createTrigger(String tableName) 
+	{
 		ConnectionManager cManager = null;
 		Connection conn = null;
 
-		try {
+		try 
+		{
 			cManager = BbDatabase.getDefaultInstance().getConnectionManager();
 			conn = cManager.getConnection();
 			StringBuffer queryString = new StringBuffer("");
@@ -106,50 +120,59 @@ import blackboard.platform.plugin.PlugInUtil;
 			 * queryString.append("BEGIN SELECT " + labname +
 			 * "_seq.NEXTVAL INTO :new.pk1 FROM dual; END;" +
 			 * "	 / ALTER TRIGGER " + labname + "_trig ENABLE" );
-			 */
-			queryString.append("CREATE OR REPLACE TRIGGER  " + labname
-					+ "_trig BEFORE INSERT ON " + labname + " FOR EACH ROW ");
-			queryString.append("BEGIN :new.pk1 := " + labname
-					+ "_seq.nextval;  END;" + "	 / ALTER TRIGGER " + labname
+			 *
+			queryString.append("CREATE OR REPLACE TRIGGER  " + tableName
+					+ "_trig BEFORE INSERT ON " + tableName + " FOR EACH ROW ");
+			queryString.append("BEGIN :new.pk1 := " + tableName
+					+ "_seq.nextval;  END;" + "	 / ALTER TRIGGER " + tableName
 					+ "_trig ENABLE");
 
 			LOGGER.info(queryString.toString());
 			Statement trigQuery = conn.createStatement();
 			trigQuery.executeQuery(queryString.toString());
-			LOGGER.info("make trigger " + labname);
+			LOGGER.info("make trigger " + tableName);
 
-		} catch (java.sql.SQLException sE) {
-
+		} 
+		catch(java.sql.SQLException sE) 
+		{
 			LOGGER.error(sE.getMessage());
 			sE.printStackTrace();
 
-		} catch (ConnectionNotAvailableException cE) {
-
+		}
+		catch(ConnectionNotAvailableException cE)
+		{
 			LOGGER.error(cE.getMessage());
 			cE.printStackTrace();
 
-		} finally {
-			if (conn != null) {
+		}
+		finally
+		{
+			if(conn != null) 
+			{
 				cManager.releaseConnection(conn);
 			}
 		}
-
 	}
+	*/
 
-	public void initGradeLogistics(Context ctx, String tablename) {
+	//initializes by loading the course membership
+	public void initGradeLogistics(Context ctx, String tableName, String labComment, int labNumber)
+	{
 		Helper h = new Helper();
-		loadCourseMembership(ctx, h.fetchRoster(ctx), tablename);
+		loadCourseMembership(ctx, labNumber, h.fetchRoster(ctx), tableName, labComment);
 	}
 
-
-	private void loadCourseMembership(Context ctx,
-			List<CourseMembership> roster, String labname) {
+	private void loadCourseMembership(Context ctx, int labNumber,
+			List<CourseMembership> roster, String tableName, String labComment)
+	{
 		ConnectionManager cManager = null;
 		Connection conn = null;
 
 		StringBuilder q = new StringBuilder();
 		String columns;
-		try {
+		
+		try
+		{
 			cManager = BbDatabase.getDefaultInstance().getConnectionManager();
 			conn = cManager.getConnection();
 			ResultSet rSet = null;
@@ -157,18 +180,20 @@ import blackboard.platform.plugin.PlugInUtil;
 			int columnCount = 0;
 			Helper h = new Helper();
 
-			for (int i = 0; i < roster.size(); ++i) {
+			for(int i = 0; i < roster.size(); ++i)
+			{
 				String uid = "";
 				uid = roster.get(i).getUserId().toExternalString();
 				StringBuffer queryString = new StringBuffer("");
-				rSet = h.exists(conn, uid, ctx.getCourse().getId()
-						.toExternalString(), labname);
+				rSet = h.exists(conn, labNumber, uid, ctx.getCourse().getId().toExternalString(), 
+						tableName);
 				rsMeta = rSet.getMetaData();
 
-				if (!(rSet.next())) {
+				if(!(rSet.next())) //user id not found
+				{
 					LOGGER.info("Did not find userid " + uid);
-					int pk1 = h.nextVal(labname);
-					queryString.append("INSERT INTO " + labname + " ( ");
+					int pk1 = h.nextVal(tableName);
+					queryString.append("INSERT INTO " + tableName + " ( ");
 					columns = h.buildColumnString(rsMeta).toString();
 
 					queryString.append(columns + " ) " + "VALUES ( ");
@@ -177,68 +202,80 @@ import blackboard.platform.plugin.PlugInUtil;
 
 					columnCount = rsMeta.getColumnCount();
 					q = h.qMarks(columnCount, 0);// Start from 0 or 1
-					queryString.append(q);
+					
+					queryString.append(q);					
 					LOGGER.info("INSERT string " + queryString.toString());
+					
 					PreparedStatement insertQuery = conn.prepareStatement(
 							queryString.toString(),
 							PreparedStatement.RETURN_GENERATED_KEYS);
+					
 					insertQuery.setInt(1, pk1);
 					insertQuery.setString(2, uid);
 					insertQuery.setString(3, ctx.getCourse().getId()
 							.toExternalString());
+					
 					String temp = "0";
-					for (int j = 4; j <= columnCount; j++) {
+					
+					for(int j = 4; j <= columnCount; j++)
+					{
 						insertQuery.setString(j, temp);
 					}
 
 					insertQuery.executeUpdate();
 					insertQuery.close();
 
-				} else {
+				} 
+				else
+				{
 					StringBuilder debug = new StringBuilder();
+					
 					for (int j = 1; j < rsMeta.getColumnCount(); ++j)
+					{
 						debug.append(rSet.getString(j) + ",");
+					}
 
 					// LOGGER.info("membership " + debug.toString());
 				}
-
 			}
-
-		} catch (java.sql.SQLException sE) {
-
+		} 
+		catch(java.sql.SQLException sE)
+		{
 			LOGGER.error(sE.getMessage());
 			sE.printStackTrace();
-
-		} catch (ConnectionNotAvailableException cE) {
-
+		}
+		catch(ConnectionNotAvailableException cE)
+		{
 			LOGGER.error(cE.getMessage());
 			cE.printStackTrace();
-
-		} finally {
-			if (conn != null) {
+		}
+		finally
+		{
+			if(conn != null) 
+			{
 				cManager.releaseConnection(conn);
 			}
 		}
-
 	}
 
-	public Id makeLineItem(String labname, String jspname,  int pointsPossible,
+	//add a grade column for a lab in the grade center
+	public Id makeLineItem(String labComment, String jspname,  int pointsPossible,
 			Context ctx) throws KeyNotFoundException, PersistenceException {
 		Lineitem assignment = null;
 		try {
 			String url = PlugInUtil.getUri("ycdb", "LabDebug", jspname); 
-			assignment = getLineItem(labname, ctx.getCourseId());
+			assignment = getLineItem(labComment, ctx.getCourseId());
 
 			if (assignment == null) {
 				LOGGER.info("No matching lineitem, create a new one url " + url);
 				assignment = new Lineitem();
 				assignment.setCourseId(ctx.getCourseId());
-				assignment.setName(labname);
+				assignment.setName(labComment);
 				assignment.setPointsPossible(pointsPossible);
-				assignment.setType(labname);
+				assignment.setType(labComment);
 				assignment.setIsAvailable(true);
 				assignment.setDateAdded();
-				assignment.setAssessmentId(labname, AssessmentLocation.EXTERNAL);
+				assignment.setAssessmentId(labComment, AssessmentLocation.EXTERNAL);
 				assignment.setAttemptHandlerUrl(url);
 				LineitemDbPersister linePersister = LineitemDbPersister.Default
 						.getInstance();
@@ -259,28 +296,36 @@ import blackboard.platform.plugin.PlugInUtil;
 		else
 			return null;
 	}
- 
-	public void deleteLineItem(String labname, Id courseId)
+	
+	//delete a grade column for a lab
+	public void deleteLineItem(String labComment, Id courseId)
 	{
-		Lineitem l = getLineItem(labname, courseId);
-		if (l == null)
+		Lineitem l = getLineItem(labComment, courseId);
+		
+		if(l == null)
 		{
 			LOGGER.info("Cannot find line item");
 			return;
 		}
 			
-		try {
+		try 
+		{
 			LineitemDbPersister linePersister = LineitemDbPersister.Default.getInstance(); 
 			LOGGER.info("Deleting lineitem="+l.getId());
 			linePersister.deleteById(l.getId());
 
-		} catch (PersistenceException e) {
+		} 
+		catch(PersistenceException e)
+		{
  			e.printStackTrace();
 		}
+		
 		return;
 	}
 	
-	public Lineitem getLineItem(String labname, Id courseId) {
+	//get a grade column from the grade center
+	public Lineitem getLineItem(String labComment, Id courseId) 
+	{
 		PersistenceService bpService = PersistenceServiceFactory.getInstance();
  		BbPersistenceManager bpManager = bpService.getDbPersistenceManager();
 		LineitemDbLoader loader = null;
@@ -314,14 +359,14 @@ import blackboard.platform.plugin.PlugInUtil;
 		return null;
 	}
 
-
-	private CourseMembership getCourseMembership(Context ctx, Id userId) {
+	private CourseMembership getCourseMembership(Context ctx, Id userId)
+	{
 		// TODO Auto-generated method stub
 		return getCourseMembership(ctx,userId.toExternalString());
 	}
 
 	private CourseMembership getCourseMembership(Context ctx, String uid)
-   {
+    {
 	   List<CourseMembership> crsMembership; 
 	   Helper h = new Helper();
 	   crsMembership = h.fetchRoster(ctx);
@@ -338,101 +383,98 @@ import blackboard.platform.plugin.PlugInUtil;
 			}
 	   }
 	   return cm;
-   }
-   protected void clearAttempt(Context ctx, String uid, 	
-                Lineitem lineitem) throws KeyNotFoundException,
-            	PersistenceException, ValidationException 
-   {
-	   Score s = null;
- 	   CourseMembership cm = getCourseMembership(ctx, uid);
- 	   LOGGER.info("clearStudentAttempt for " + cm.getId().toExternalString() + " lineitem " + lineitem.getId().toExternalString());
- 	  try{ 
- 	   s = ScoreDbLoader.Default.getInstance().loadByCourseMembershipIdAndLineitemId(cm.getId(), lineitem.getId());
- 	  if (s == null)
-	   {	
- 		 LOGGER.info("clearStudentAttempt - NO score to clear");
-	   }
- 	 else
-	  {
- 
-		 ScoreDbPersister.Default.getInstance().deleteById(s.getId());
- 		 LOGGER.info("clearedStudentAttempt - success");
-
-	  }
- 	  }catch(KeyNotFoundException k)
- 	  {
-  		 LOGGER.info("clearStudentAttempt - NO score to clear");
- 		  
- 	  }
- 	  
-	   
-   }
-	protected void addStudentAttempts(Context ctx, String labname, String jspname,
+    }
+	
+	//instructor clears student's attempt so that the student can re-submit the lab
+	protected void clearAttempt(Context ctx, String uid, 	
 			Lineitem lineitem) throws KeyNotFoundException,
 			PersistenceException, ValidationException 
 	{
- 		Score s = null;
+		Score s = null;
+ 	   	CourseMembership cm = getCourseMembership(ctx, uid);
+ 	   	LOGGER.info("clearStudentAttempt for " + cm.getId().toExternalString() + " lineitem " + lineitem.getId().toExternalString());
+ 	  
+ 	   	try { 
+ 	   		s = ScoreDbLoader.Default.getInstance().loadByCourseMembershipIdAndLineitemId(cm.getId(), lineitem.getId());
+ 	  
+ 	   		if (s == null)
+ 	   		{	
+ 	   			LOGGER.info("clearStudentAttempt - NO score to clear");
+ 	   		}
+ 	   		else
+ 	   		{
+ 	   			ScoreDbPersister.Default.getInstance().deleteById(s.getId());
+ 	   			LOGGER.info("clearedStudentAttempt - success");
+ 	   		}
+ 	   	} catch(KeyNotFoundException k) {
+ 	   		LOGGER.info("clearStudentAttempt - NO score to clear"); 		  
+ 	   	}	   
+	}
+	
+	//when students submit the lab report, this method is called
+	protected void addStudentAttempts(Context ctx, int labNumber, String jspname,
+			Lineitem lineitem) throws KeyNotFoundException,
+			PersistenceException, ValidationException 
+	{
+		Score s = null;
   		CourseMembership cm = getCourseMembership(ctx, ctx.getUserId());
 		 	
 		String url = PlugInUtil.getUri("ycdb", "LabDebug",
-						jspname+"?course_id=" + cm.getCourseId().toExternalString() + "&user_id="
-								+ cm.getUserId().toExternalString());
-	   LOGGER.info("addStudentAttempt " + labname + " " + url);
-	   try{
-	   s = ScoreDbLoader.Default.getInstance().loadByCourseMembershipIdAndLineitemId(cm.getId(), lineitem.getId());
-	   if (s == null)
-	   {	
-		  s = new Score();
-		  s.setDateAdded();
-		}
-	   }catch(KeyNotFoundException k){
-			  s = new Score();
-			  s.setDateAdded();
-
-	   }
-		Outcome outcome = s.getOutcome();
-		Attempt attempt;
-
-		if (outcome.getAttemptCount() == 0) 
-		{
-		    lineitem.setAttemptHandlerUrl(url);
-			lineitem.setAssessmentId("user_id="
-			      			+ ctx.getUser().getId().toExternalString(), Lineitem.AssessmentLocation.EXTERNAL);
-
-			s.setLineitemId(lineitem.getId());
-			// LOGGER.info("Course is " + cm.getCourseId());
-					 
-			s.setCourseMembershipId(cm.getId());
-
-			attempt = outcome.createAttempt();
-			
-			if (attempt == null) 
-			{
-				throw new IllegalStateException(
-								"could not create attempt");
+				jspname+"?course_id=" + cm.getCourseId().toExternalString() + "&user_id="
+				+ cm.getUserId().toExternalString());
+	   
+		LOGGER.info("addStudentAttempt " + labNumber + " " + url);
+	   
+		try {
+			s = ScoreDbLoader.Default.getInstance().loadByCourseMembershipIdAndLineitemId(cm.getId(), lineitem.getId());
+	   
+			if (s == null)
+			{	
+				s = new Score();
+				s.setDateAdded();
 			}
-			attempt.setOutcomeId(outcome.getId());
+		} catch(KeyNotFoundException k) {
+			s = new Score();
+			s.setDateAdded();
 
-			attempt.setStatus(Attempt.Status.NEEDS_GRADING);
-			attempt.setAttemptedDate(Calendar.getInstance());
-			s.setAttemptId(attempt.getId().toExternalString(), Score.AttemptLocation.EXTERNAL);
- 			ScoreDbPersister.Default.getInstance().persist(s);
-
-			AttemptDbPersister.Default.getInstance().persist(attempt);
-			LOGGER.info("New attempt created for " + cm.getId().toExternalString());
-
-
-		} 
-		else 
-		{
-			attempt = AttemptDbLoader.Default.getInstance().loadById(
-							outcome.getLastAttemptId());//highest score etc.
-			LOGGER.info("Cannot create duplicate attempts");
-					
 		}
+			Outcome outcome = s.getOutcome();
+			Attempt attempt;
 
-		return;
+			if (outcome.getAttemptCount() == 0) 
+			{
+				lineitem.setAttemptHandlerUrl(url);
+				lineitem.setAssessmentId("user_id="
+						+ ctx.getUser().getId().toExternalString(), Lineitem.AssessmentLocation.EXTERNAL);
+
+				s.setLineitemId(lineitem.getId());
+				// LOGGER.info("Course is " + cm.getCourseId());
+					 
+				s.setCourseMembershipId(cm.getId());
+
+				attempt = outcome.createAttempt();
+			
+				if (attempt == null) 
+				{
+					throw new IllegalStateException(
+							"could not create attempt");
+				}
+				
+				attempt.setOutcomeId(outcome.getId());
+
+				attempt.setStatus(Attempt.Status.NEEDS_GRADING);
+				attempt.setAttemptedDate(Calendar.getInstance());
+				s.setAttemptId(attempt.getId().toExternalString(), Score.AttemptLocation.EXTERNAL);
+				ScoreDbPersister.Default.getInstance().persist(s);
+
+				AttemptDbPersister.Default.getInstance().persist(attempt);
+				LOGGER.info("New attempt created for " + cm.getId().toExternalString());
+			} 
+			else 
+			{
+				attempt = AttemptDbLoader.Default.getInstance().loadById(
+						outcome.getLastAttemptId());//highest score etc.
+				LOGGER.info("Cannot create duplicate attempts");					
+			}
 	}
-
-
-  }
+}
