@@ -1,55 +1,77 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
- import="java.util.*, 
-blackboard.platform.session.*, 
-blackboard.data.user.*, 
-blackboard.persist.*,
-blackboard.persist.BbPersistenceManager,
-blackboard.platform.persistence.PersistenceService,
-blackboard.platform.persistence.PersistenceServiceFactory,
-blackboard.persist.user.*,
-blackboard.data.course.*,
-blackboard.persist.course.*,
-blackboard.data.gradebook.Lineitem.*,
-blackboard.persist.gradebook.LineitemDbPersister"
-pageEncoding="UTF-8"%> 
- <%@ page import="Labs.GradeLogistics" %>
- 
- <%@ taglib uri="/bbUI" prefix="bbUI" %> 
- <%@ taglib uri="/bbData" prefix="bbData"%> 
- <%@ taglib uri="/bbNG" prefix="bbNG"%>
- <%@ taglib prefix="ng" uri="/bbNG" %>
- 
- <%@ page import="blackboard.data.gradebook.Lineitem" %>
- <%@ page import="blackboard.persist.gradebook.LineitemDbPersister" %>
-
- <%@ taglib uri="/bbUI" prefix="bbUI" %> 
- <%@ taglib uri="/bbData" prefix="bbData"%> 
- <%@ taglib uri="/bbNG" prefix="bbNG"%>
- <bbNG:learningSystemPage 
-	title="Welcome To Blackboard Building Block Development - Course Information"
-	ctxId="ctx">
-
-	<bbNG:pageHeader>
-		<bbNG:breadcrumbBar environment="COURSE" navItem="ycdb-chem109-nav-LabDebug" >
-	
-				<bbNG:breadcrumb title="Home" href="welcome_s.jsp?course_id=@X@course.pk_string@X@&user_id=@X@user.pk_string@X@"/>
-			<bbNG:breadcrumb> Home Page </bbNG:breadcrumb>
-		</bbNG:breadcrumbBar>
-		<bbNG:pageTitleBar>
-			Welcome to YC Chem Labs
-		</bbNG:pageTitleBar>
-	</bbNG:pageHeader>
 <html>
 	<head>
-    	<script>
-     	
-    	function callLab1 () {
-		window.open("lab0_1.jsp") 		
-		}		
-    	
-        function callLab2 () {
-		window.open("lab0_2.jsp")
-		}	    	
+    	<script>     	
+	    	function callLab1 () {
+				window.open("lab0_1.jsp") 		
+			}		
+	    	
+	        function callLab2 () {
+				window.open("lab0_2.jsp")
+			}
+	        
+	        function callLab3 () {
+				window.open("lab0_3.jsp")
+			}
+	        
+	        function callLab4 () {
+				window.open("lab0_4.jsp")
+			}
+	        
+	        function callLab5 () {
+				window.open("lab0_5.jsp")
+			}
+	        
+	        function callLab6 () {
+				window.open("lab0_6.jsp")
+			}
+	        
+	        function callLab7 () {
+				window.open("lab0_7.jsp")
+			}
+	        
+	        function callLab8 () {
+				window.open("lab0_8.jsp")
+			}
+	        
+	        function callLab9 () {
+				window.open("lab0_9.jsp")
+			}
+	        
+	        function callLab10 () {
+				window.open("lab1_1.jsp")
+			}
+	        
+	        function callLab11 () {
+				window.open("lab1_2.jsp")
+			}
+	        
+	        function callLab12 () {
+				window.open("lab1_3.jsp")
+			}
+	        
+	        function callLab13 () {
+				window.open("lab1_4.jsp")
+			}
+	        
+	        function callLab14 () {
+				window.open("lab1_5.jsp")
+			}
+	        
+	        function callLab15 () {
+				window.open("lab1_6.jsp")
+			}
+	        
+	        function callLab16 () {
+				window.open("lab1_7.jsp")
+			}
+	        
+	        function callLab17 () {
+				window.open("lab1_8.jsp")
+			}
+	        
+	        function callLab18 () {
+				window.open("lab1_9.jsp")
+			}
     	</script>
 	</head>
 	 <br>
@@ -68,7 +90,134 @@ pageEncoding="UTF-8"%>
     <form method="post" action="lab0_2.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
     	<input type="submit" id="lab2" value="lab 2"/>
     </form>
-	</div>	    
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_3.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab3" value="lab 3"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_4.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab4" value="lab 4"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_5.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab5" value="lab 5"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_6.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab6" value="lab 6"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_7.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab7" value="lab 7"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_8.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab8" value="lab 8"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab0_9.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab9" value="lab 9"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_1.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab10" value="lab 10"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_2.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab11" value="lab 11"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_3.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab12" value="lab 12"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_4.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab13" value="lab 13"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_5.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab14" value="lab 14"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_6.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab15" value="lab 15"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_7.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab16" value="lab 16"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_8.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab17" value="lab 17"/>
+    </form>
+	</div>
+	 <br>
+	 <br>
+	 <br>
+    <div style="text-align: left">
+    <form method="post" action="lab1_9.jsp?course_id=${ctx.courseId.externalString}&user_id=${ctx.userId.externalString}"> 
+    	<input type="submit" id="lab18" value="lab 18"/>
+    </form>
+	</div>
 	</body>
 </html>
-</bbNG:learningSystemPage>

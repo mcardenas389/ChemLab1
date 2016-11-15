@@ -2,6 +2,7 @@
 <%@ page import="Labs.lab0_1Checks" %>
 <%@ page import="Labs.GradeLogistics" %>
 <%@ page import="Labs.Helper" %>
+<%@ page import="Labs.DataLoader" %>>
 <%@ page import="blackboard.platform.context.Context" %>
 <%@ page import="blackboard.platform.context.ContextManager" %>
 <%@ page import="blackboard.platform.context.ContextManagerFactory" %>
@@ -38,13 +39,16 @@
 <!DOCTYPE html>
 
  <%
-	 int dataX = 12;
- 	 int dataY = 3;
+	int dataX = 12;
+ 	int dataY = 3;
   	User u = ctx.getUser();
  	String userid = "";
+ 	DataLoader loader = new DataLoader();
 	lab0_1Checks checks;
+	Helper h = new Helper();
   	String courseid = request.getParameter("course_id");
   	String button = null;
+  	String tableName = "ycdb_lab_data";
 	
   	CourseMembership crsMembership = null;
 	CourseMembershipDbLoader crsMembershipLoader = null;
@@ -63,12 +67,12 @@
 			// There is no membership record.
 			errMsg = "An error occured while loading the User. Better check this out:" + pe;
 	}
+	
 	CourseMembership.Role crsMembershipRole = crsMembership.getRole();
 	 
  	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
 	{
  		String cid = request.getParameter("courseMembershipId");
- 		Helper h = new Helper();
  		userid = h.getUserIdFromCourseMembershipId(ctx, cid);	 	
 	}
 	else
@@ -76,95 +80,13 @@
 		userid = u.getId().toExternalString();
     }
  	
-	checks = new lab0_1Checks(ctx, dataX, dataY, "ycdb_chemistrylab1",  userid, courseid);
-	
-	checks.check();
-	
-	button = request.getParameter("button");
-	
- 	if (button == null)
-    {
-        button = "";
-	    //set types
-         
-         
-        checks.setType(0, 0, "String");
-        checks.setType(1, 0, "String");
-        
-        for (int i = 2; i < dataX; i++)
-        {
-            for (int j = 0; j < dataY; j++)
-            {
-                if (j == 0)
-                {
-                    checks.setType(i, j, "Double");
-                }
-                else if (j == 1)
-                {
-                    checks.setType(i, j, "Unit");
-                }
-                else 
-                {
-                    checks.setType(i, j, "Integer");
-                }
-            }
-        }
-     }
-     
-     else
-    {
-    	if(button.equals("Save") || button.equals("Check") || button.equals("Submit"))
-    	{
-    		for (int i = 0; i < dataX; i++)
-            {
-                for (int j = 0; j < dataY; j++)
-                {  
-                    checks.setData(i, j, request.getParameter("" + i + j));
-                 }
-            }
-    		
-    	}
-        if (button.equals("Clear"))
-        {  
-            checks.clear();
-        }
-        else if (button.equals("Save"))
-        {
-              
-            //perform save
-            checks.save("ycdb_chemistrylab1",userid,courseid);
-        }
-        else if (button.equals("Check"))
-        {
-              
-            //perform checks
-            checks.check();
-        }
-        else if (button.equals("Submit"))
-        {
-              
-            //perform save
-            checks.save("ycdb_chemistrylab1",userid,courseid);
-            
-            //perform submit
-            checks.submit(ctx,"ycdb_chemistrylab1","lab0_1.jsp");
-        }
-		else if (button.equals("ClearAttempt"))
-        {
-         	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
-         	{
-    			GradeLogistics gl = new GradeLogistics();
-
-        		checks.clearAttempt(ctx, userid,"ycdb_chemistrylab1");
-         	}
-        }
-        else
-        {
-            button = "";
-        }
-        button="";
-    }
- 
+ 	//load lab data to be used to populate the form
+ 	String[] labData = loader.loadData(tableName, 1, userid, courseid);
+ 	String[][] data = h.convertTo2DArray(dataX, dataY, labData[0]);
+ 	String[][] isCorrect = h.convertTo2DArray(dataX, dataY, labData[1]);
+ 	String[][] error = h.convertTo2DArray(dataX, dataY, labData[2]);
+ 	String[][] scores = h.convertTo2DArray(dataX + 1, dataY, labData[3]); //dataX + 1 is used in order to include the total score
+ 	String[][] key = h.convertTo2DArray(dataX, dataY, labData[4]);
  %>
  
 <html>
@@ -173,43 +95,17 @@
             Lab 1: Weighing Measurements: The Balance
     	</title>
     	<link rel="stylesheet" href="labs_css.css">
-    <datalist id="units" >
-            <option value="g" >g</option>	
-            <option value="mg" >mg</option>
-            <option value="kg" >kg</option>
-            <option value="L" >L</option>
-            <option value="mL" >mL</option>
-            <option value="cm" >cm</option>
-            <option value="m" >m</option>
-            <option value="km" >km</option>
-            <option value="lb" >lb</option>
-            <option value="oz" >oz</option>
-            <option value="cm3" >cm3</option>
-            <option value="s" >s</option>
-            <option value="in" >in</option>
-            <option value="ft" >ft</option>
-        </datalist>	
-        <script>
-     	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR) 
-     		{
-     			var d = document.getElementById("btns");
-     			var b = document.createElement("BUTTON")
-      		    var t = document.createTextNode("ClearAttempt");
-     		    b.appendChild(t);
-				d.appendChild(b);
-     		}
-        </script>
     </head>
     <body>
     <p>User Information</p>  
   	<p style="margin-left:10px">
    			Student Id: <%= userid%> <br />   
-   	</p>  
-
-    
+   	</p>    
     	<fieldset class="fieldset-auto-width">
             <legend>Lab 1: Weighing Measurements: The Balance</legend>
-            <form method="POST"> 
+            <%
+	            
+            %>
         
             <fieldset>
                 <legend>Basic info</legend>
@@ -219,7 +115,7 @@
                             Unknown number of metal rod:
                         </th>
                         <th>
-                            <input readonly type="number" name="00" <% if (checks.getData(0,0) != null){out.print("value=\"" + checks.getData(0,0) + "\"");}%> />
+                            <%=data[0][0]%>
                         </th>
                     </tr>
                     <tr>
@@ -227,10 +123,12 @@
                         </th>
                         <td>
                             <div style="color: red" >
-                                <% if (checks.getError(0,0) != null){out.print(checks.getError(0, 0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(0,0) != null){out.print(checks.getIsCorrect(0, 0));} %>
+                                <% 
+                                	if (error[0][0] != "") 
+                                	{
+                                		out.print(error[0][0] + " " + isCorrect[0][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -239,7 +137,7 @@
                             Unknown number of metal wire:
                         </th>
                         <th>
-                            <input readonly type="number" name="10" <% if (checks.getData(1,0) != null){out.print("value=\"" + checks.getData(1,0) + "\"");}%> />
+                            <%=data[1][0]%>
                         </th>
                     </tr>
                     <tr>
@@ -247,10 +145,12 @@
                         </th>
                         <td>
                             <div style="color: red" >
-                                <% if (checks.getError(1,0) != null){out.print(checks.getError(1, 0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(1,0) != null){out.print(checks.getIsCorrect(1, 0));} %>
+                                <% 
+                                	if (error[1][0] != "") 
+                                	{
+                                		out.print(error[1][0] + " " + isCorrect[1][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -289,40 +189,50 @@
                             Metal rod
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="20" <% if (checks.getData(2,0) != null){out.print("value=\"" + checks.getData(2,0) + "\"");}%> />
+                            <%=data[2][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="21" <% if (checks.getData(2,1) != null){out.print("value=\"" + checks.getData(2,1) + "\"");}%> size="3" />
+                            <%=data[2][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="22" <% if (checks.getData(2,2) != null){out.print("value=\"" + checks.getData(2,2) + "\"");}%> />
+                            <%=data[2][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(2,0) != null){out.print(checks.getError(2,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(2,0) != null){out.print(checks.getIsCorrect(2, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(2,1) != null){out.print(checks.getError(2,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(2,1) != null){out.print(checks.getIsCorrect(2, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[2][0] != "") 
+                                	{
+                                		out.print(error[2][0] + " " + scores[2][0] + " " + isCorrect[2][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(2,2) != null){out.print(checks.getError(2,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[2][1] != "") 
+                                	{
+                                		out.print(error[2][1] + " " + scores[2][1] + " " + isCorrect[2][1]);
+                                	} 
+                                %>
                             </div>
                             <div style="color: green" >
-                                <% if (checks.getIsCorrect(2,2) != null){out.print(checks.getIsCorrect(2, 2));} %>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[2][2] != "") 
+                                	{
+                                		out.print(error[2][2] + " " + scores[2][2] + " " + isCorrect[2][2]);
+                                	} 
+                                %>
+                            </div>
+                            <div style="color: green" >
                             </div>
                         </td>
                     </tr>
@@ -331,40 +241,46 @@
                             Vial + Sodium chloride
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="30" <% if (checks.getData(3,0) != null){out.print("value=\"" + checks.getData(3,0) + "\"");}%> />
+                            <%=data[3][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="31" <% if (checks.getData(3,1) != null){out.print("value=\"" + checks.getData(3,1) + "\"");}%> size="3" />
+                            <%=data[3][1]%>"
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="32" <% if (checks.getData(3,2) != null){out.print("value=\"" + checks.getData(3,2) + "\"");}%> />
+                            <%=data[3][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(3,0) != null){out.print(checks.getError(3,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(3,0) != null){out.print(checks.getIsCorrect(3, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(3,1) != null){out.print(checks.getError(3,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(3,1) != null){out.print(checks.getIsCorrect(3, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[3][0] != "") 
+                                	{
+                                		out.print(error[3][0] + " " + scores[3][0] + " " + isCorrect[3][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(3,2) != null){out.print(checks.getError(3,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[3][1] != "") 
+                                	{
+                                		out.print(error[3][1] + " " + scores[3][1] + " " + isCorrect[3][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(3,2) != null){out.print(checks.getIsCorrect(3, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[3][2] != "") 
+                                	{
+                                		out.print(error[3][2] + " " + scores[3][2] + " " + isCorrect[3][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -384,40 +300,46 @@
                             Metal rod
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="40" <% if (checks.getData(4,0) != null){out.print("value=\"" + checks.getData(4,0) + "\"");}%> />
+                            <%=data[4][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="41" <% if (checks.getData(4,1) != null){out.print("value=\"" + checks.getData(4,1) + "\"");}%> size="3" />
+                            <%=data[4][1]%>"
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="42" <% if (checks.getData(4,2) != null){out.print("value=\"" + checks.getData(4,2) + "\"");}%> />
+                            <%=data[4][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(4,0) != null){out.print(checks.getError(4,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(4,0) != null){out.print(checks.getIsCorrect(4, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(4,1) != null){out.print(checks.getError(4,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(4,1) != null){out.print(checks.getIsCorrect(4, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[4][0] != "") 
+                                	{
+                                		out.print(error[4][0] + " " + scores[4][0] + " " + isCorrect[4][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(4,2) != null){out.print(checks.getError(4,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[4][1] != "") 
+                                	{
+                                		out.print(error[4][1] + " " + scores[4][1] + " " + isCorrect[4][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(4,2) != null){out.print(checks.getIsCorrect(4, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[4][2] != "") 
+                                	{
+                                		out.print(error[4][2] + " " + scores[4][2] + " " + isCorrect[4][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -426,40 +348,46 @@
                             Metal wire - Trial 1
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="50" <% if (checks.getData(5,0) != null){out.print("value=\"" + checks.getData(5,0) + "\"");}%> required />
+                            <%=data[5][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="51" <% if (checks.getData(5,1) != null){out.print("value=\"" + checks.getData(5,1) + "\"");}%> size="3" />
+                            <%=data[5][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="52" <% if (checks.getData(5,2) != null){out.print("value=\"" + checks.getData(5,2) + "\"");}%> />
+                            <%=data[5][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(5,0) != null){out.print(checks.getError(5,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(5,0) != null){out.print(checks.getIsCorrect(5, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(5,1) != null){out.print(checks.getError(5,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(5,1) != null){out.print(checks.getIsCorrect(5, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[5][0] != "") 
+                                	{
+                                		out.print(error[5][0] + " " + scores[5][0] + " " + isCorrect[5][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(5,2) != null){out.print(checks.getError(5,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[5][1] != "") 
+                                	{
+                                		out.print(error[5][1] + " " + scores[5][1] + " " + isCorrect[5][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(5,2) != null){out.print(checks.getIsCorrect(5, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[5][2] != "") 
+                                	{
+                                		out.print(error[5][2] + " " + scores[5][2] + " " + isCorrect[5][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -468,40 +396,46 @@
                             Trial 2
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="60" <% if (checks.getData(6,0) != null){out.print("value=\"" + checks.getData(6,0) + "\"");}%> required />
+                            <%=data[6][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="61" <% if (checks.getData(6,1) != null){out.print("value=\"" + checks.getData(6,1) + "\"");}%> size="3" />
+                            <%=data[6][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="62" <% if (checks.getData(6,2) != null){out.print("value=\"" + checks.getData(6,2) + "\"");}%> />
+                            <%=data[6][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(6,0) != null){out.print(checks.getError(6,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(6,0) != null){out.print(checks.getIsCorrect(6, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(6,1) != null){out.print(checks.getError(6,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(6,1) != null){out.print(checks.getIsCorrect(6, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[6][0] != "") 
+                                	{
+                                		out.print(error[6][0] + " " + scores[6][0] + " " + isCorrect[6][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(6,2) != null){out.print(checks.getError(6,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[6][1] != "") 
+                                	{
+                                		out.print(error[6][1] + " " + scores[6][1] + " " + isCorrect[6][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(6,2) != null){out.print(checks.getIsCorrect(6, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[6][2] != "") 
+                                	{
+                                		out.print(error[6][2] + " " + scores[6][2] + " " + isCorrect[6][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -510,40 +444,46 @@
                             Trial 3
 			</td>
 			<td>
-                            <input readonly type="number" step="any" name="70" <% if (checks.getData(7,0) != null){out.print("value=\"" + checks.getData(7,0) + "\"");}%> required />
+                            <%=data[7][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="71" <% if (checks.getData(7,1) != null){out.print("value=\"" + checks.getData(7,1) + "\"");}%> size="3" />
+                            <%=data[7][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="72" <% if (checks.getData(7,2) != null){out.print("value=\"" + checks.getData(7,2) + "\"");}%> />
+                            <%=data[7][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(7,0) != null){out.print(checks.getError(7,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(7,0) != null){out.print(checks.getIsCorrect(7, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(7,1) != null){out.print(checks.getError(7,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(7,1) != null){out.print(checks.getIsCorrect(7, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[7][0] != "") 
+                                	{
+                                		out.print(error[7][0] + " " + scores[7][0] + " " + isCorrect[7][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(7,2) != null){out.print(checks.getError(7,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[7][1] != "") 
+                                	{
+                                		out.print(error[7][1] + " " + scores[7][1] + " " + isCorrect[7][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(7,2) != null){out.print(checks.getIsCorrect(7, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[7][2] != "") 
+                                	{
+                                		out.print(error[7][2] + " " + scores[7][2] + " " + isCorrect[7][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -552,40 +492,46 @@
                             Weighing paper and sodium chloride
 			</td>
 			<td>
-                            <input readonly type="number" step="any" name="80" <% if (checks.getData(8,0) != null){out.print("value=\"" + checks.getData(8,0) + "\"");}%> required />
+                            <%=data[8][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="81" <% if (checks.getData(8,1) != null){out.print("value=\"" + checks.getData(8,1) + "\"");}%> size="3" />
+                            <%=data[8][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="82" <% if (checks.getData(8,2) != null){out.print("value=\"" + checks.getData(8,2) + "\"");}%> />
+                            <%=data[8][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(8,0) != null){out.print(checks.getError(8,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(8,0) != null){out.print(checks.getIsCorrect(8, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(8,1) != null){out.print(checks.getError(8,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(8,1) != null){out.print(checks.getIsCorrect(8, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[8][0] != "") 
+                                	{
+                                		out.print(error[8][0] + " " + scores[8][0] + " " + isCorrect[8][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(8,2) != null){out.print(checks.getError(8,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[8][1] != "") 
+                                	{
+                                		out.print(error[8][1] + " " + scores[8][1] + " " + isCorrect[8][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(8,2) != null){out.print(checks.getIsCorrect(8, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[8][2] != "") 
+                                	{
+                                		out.print(error[8][2] + " " + scores[8][2] + " " + isCorrect[8][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -594,40 +540,46 @@
                             Weighing paper
 			</td>
 			<td>
-                            <input readonly type="number" step="any" name="90" <% if (checks.getData(9,0) != null){out.print("value=\"" + checks.getData(9,0) + "\"");}%> required />
+                            <%=data[9][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="91" <% if (checks.getData(9,1) != null){out.print("value=\"" + checks.getData(9,1) + "\"");}%> size="3" />
+                            <%=data[9][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="92" <% if (checks.getData(9,2) != null){out.print("value=\"" + checks.getData(9,2) + "\"");}%> />
+                            <%=data[9][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(9,0) != null){out.print(checks.getError(9,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(9,0) != null){out.print(checks.getIsCorrect(9, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(9,1) != null){out.print(checks.getError(9,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(9,1) != null){out.print(checks.getIsCorrect(9, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[9][0] != "") 
+                                	{
+                                		out.print(error[9][0] + " " + scores[9][0] + " " + isCorrect[9][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(9,2) != null){out.print(checks.getError(9,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[9][1] != "") 
+                                	{
+                                		out.print(error[9][1] + " " + scores[9][1] + " " + isCorrect[9][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(9,2) != null){out.print(checks.getIsCorrect(9, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[9][2] != "") 
+                                	{
+                                		out.print(error[9][2] + " " + scores[9][2] + " " + isCorrect[9][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -656,40 +608,46 @@
                             Average weight of metal wire
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="100" <% if (checks.getData(10,0) != null){out.print("value=\"" + checks.getData(10,0) + "\"");}%> />
+                            <%=data[10][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="101" <% if (checks.getData(10,1) != null){out.print("value=\"" + checks.getData(10,1) + "\"");}%> size="3" />
+                            <%=data[10][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="102" <% if (checks.getData(10,2) != null){out.print("value=\"" + checks.getData(10,2) + "\"");}%> />
+                            <%=data[10][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(10,0) != null){out.print(checks.getError(10,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(10,0) != null){out.print(checks.getIsCorrect(10, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(10,1) != null){out.print(checks.getError(10,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(10,1) != null){out.print(checks.getIsCorrect(10, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[10][0] != "") 
+                                	{
+                                		out.print(error[10][0] + " " + scores[10][0] + " " + isCorrect[10][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(10,2) != null){out.print(checks.getError(10,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[10][1] != "") 
+                                	{
+                                		out.print(error[10][1] + " " + scores[10][1] + " " + isCorrect[10][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(10,2) != null){out.print(checks.getIsCorrect(10, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[10][2] != "") 
+                                	{
+                                		out.print(error[10][2] + " " + scores[10][2] + " " + isCorrect[10][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
@@ -700,44 +658,54 @@
                             removed from vial 
                         </td>
 			<td>
-                            <input readonly type="number" step="any" name="110" <% if (checks.getData(11,0) != null){out.print("value=\"" + checks.getData(11,0) + "\"");}%> />
+                            <%=data[11][0]%>
                         </td>
                         <td>
-                            <input readonly list="units" name="111" <% if (checks.getData(11,1) != null){out.print("value=\"" + checks.getData(11,1) + "\"");}%> size="3" />
+                            <%=data[11][1]%>
                         </td>
                         <td>
-                            <input readonly type="number" step="any" name="112" <% if (checks.getData(11,2) != null){out.print("value=\"" + checks.getData(11,2) + "\"");}%> />
+                            <%=data[11][2]%>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(11,0) != null){out.print(checks.getError(11,0));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(11,0) != null){out.print(checks.getIsCorrect(11, 0));} %>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="color: red">
-                                <% if (checks.getError(11,1) != null){out.print(checks.getError(11,1));} %>
-                            </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(11,1) != null){out.print(checks.getIsCorrect(11, 1));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[11][0] != "") 
+                                	{
+                                		out.print(error[11][0] + " " + scores[11][0] + " " + isCorrect[11][0]);
+                                	} 
+                                %>
                             </div>
                         </td>
                         <td>
-                            <div style="color: red">
-                                <% if (checks.getError(11,2) != null){out.print(checks.getError(11,2));} %>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[11][1] != "") 
+                                	{
+                                		out.print(error[11][1] + " " + scores[11][1] + " " + isCorrect[11][1]);
+                                	} 
+                                %>
                             </div>
-                            <div style="color: green" >
-                                <% if (checks.getIsCorrect(11,2) != null){out.print(checks.getIsCorrect(11, 2));} %>
+                        </td>
+                        <td>
+                            <div style="color: red" >
+                                <% 
+                                	if (error[11][2] != "") 
+                                	{
+                                		out.print(error[11][2] + " " + scores[11][2] + " " + isCorrect[11][2]);
+                                	} 
+                                %>
                             </div>
                         </td>
                     </tr>
  		</table>
+ 		<br>
+        <p> 
+        Total Score: <%=scores[dataX+1][0]%> 
+        </p>
             </fieldset>
             <br>
             <table>
@@ -745,7 +713,7 @@
 	            	<td></td>
 		            <td style="width:50%">
 		            	<div style="text-align: center" id="btns">
-                			<input type="submit" name="button" value="ClearAttempt" id="CA"/>
+                			
                 			<p>Instructor View [Test Page]</p>
             			</div>
 		            </td>
@@ -753,7 +721,6 @@
 	            </tr>     
             </table>
             <br>
-            </form>
         </fieldset>
     <br>
     </body>
