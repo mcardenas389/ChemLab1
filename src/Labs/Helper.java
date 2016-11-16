@@ -45,7 +45,7 @@ public class Helper {
 	}
 
     //public String getUserIdFromCourseMembershipId(Context ctx, String userId)
-    public String getUserID(Context ctx, String userId)
+    public String getUserId(Context ctx, String userId)
     {
     	String userid = "";
     	Helper h = new Helper();

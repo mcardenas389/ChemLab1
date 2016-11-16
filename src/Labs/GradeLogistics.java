@@ -349,12 +349,14 @@ import blackboard.platform.plugin.PlugInUtil;
 //			 LOGGER.info("lineitem id " + l.getId() );
 	//		 LOGGER.info("lineitem assessment id " + l.getAssessmentId());
 		//	 LOGGER.info("labname " + labname);
+			
+			/*
 			if (l != null && l.getAssessmentId() != null
 					&& l.getAssessmentId().toString().equals(labname))
 			{
 				return l;
 		
-			}
+			}*/
 		}
 		return null;
 	}

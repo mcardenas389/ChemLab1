@@ -8,7 +8,7 @@ public class lab0_2Checks extends inputChecks
 	public lab0_2Checks(Context ctx, String tableName, int x, int y, 
 			String userid, String courseid, int labNumber)
 	{
-        super(ctx, tableName, x, y, userid, courseid, labNumber);
+        super(tableName, x, y, userid, courseid, labNumber);
     }
 	 
     @Override
