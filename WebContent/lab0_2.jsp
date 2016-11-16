@@ -10,7 +10,7 @@
 <%@ page import="blackboard.platform.persistence.PersistenceService" %>
 <%@ page import="blackboard.platform.persistence.PersistenceServiceFactory" %>
 <%@ page import="blackboard.persist.BbPersistenceManager"%>
- <%@ page import="blackboard.persist.*"%>
+<%@ page import="blackboard.persist.*"%>
  
 <%@ page import="blackboard.data.gradebook.Lineitem" %>
 <%@ page import="blackboard.persist.gradebook.LineitemDbPersister" %>
@@ -42,6 +42,7 @@
  	String userid = "";
 	lab0_2Checks checks;
   	String courseid = request.getParameter("course_id");
+  	String tableName = "ycdb_lab_data";
 
     String button = "";
    	String c = request.getParameter("course_id");
@@ -69,7 +70,7 @@
 	{
  		String cid = request.getParameter("courseMembershipId");
  		Helper h = new Helper();
- 		userid = h.getUserIdFromCourseMembershipId(ctx, cid);
+ 		userid = h.getUserId(ctx, cid);
  	 	
 	}
 	else
@@ -77,7 +78,7 @@
 		userid = u.getId().toExternalString();
 	}
 
-	checks = new lab0_2Checks(ctx, dataX, dataY, "ycdb_chemistrylab2",  userid, courseid);
+	checks = new lab0_2Checks(ctx, tableName, dataX, dataY, userid, courseid, 2);
 	button = request.getParameter("button");
 		
     if (button == null)
@@ -117,7 +118,7 @@
         {
               
             //perform save
-            checks.save("ycdb_chemistrylab2",userid,courseid);
+            //checks.save("ycdb_chemistrylab2",userid,courseid);
         }
         else if (button.equals("Check"))
         {
@@ -130,10 +131,10 @@
         {
              
             //perform save
-            checks.save("ycdb_chemistrylab2", userid, courseid);
+            //checks.save("ycdb_chemistrylab2", userid, courseid);
             
             //perform submit
-            checks.submit(ctx,"ycdb_chemistrylab2", "lab0_2.jsp");
+            //checks.submit(ctx,"ycdb_chemistrylab2", "lab0_2.jsp");
         }
         else
         {

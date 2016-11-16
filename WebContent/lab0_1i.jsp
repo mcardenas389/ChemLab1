@@ -12,7 +12,7 @@
 <%@ page import="blackboard.platform.persistence.PersistenceService" %>
 <%@ page import="blackboard.platform.persistence.PersistenceServiceFactory" %>
 <%@ page import="blackboard.persist.BbPersistenceManager"%>
- <%@ page import="blackboard.persist.*"%>
+<%@ page import="blackboard.persist.*"%>
  
 <%@ page import="blackboard.data.gradebook.Lineitem" %>
 <%@ page import="blackboard.persist.gradebook.LineitemDbPersister" %>
@@ -73,7 +73,7 @@
  	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
 	{
  		String cid = request.getParameter("courseMembershipId");
- 		userid = h.getUserIdFromCourseMembershipId(ctx, cid);	 	
+ 		userid = h.getUserId(ctx, cid);	 	
 	}
 	else
 	{

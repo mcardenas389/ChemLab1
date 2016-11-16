@@ -2,27 +2,55 @@
 <%@ page import="Labs.lab0_1Checks" %>
 <%@ page import="Labs.GradeLogistics" %>
 <%@ page import="Labs.Helper" %>
+<%@ page import="blackboard.platform.context.Context" %>
+<%@ page import="blackboard.platform.context.ContextManager" %>
+<%@ page import="blackboard.platform.context.ContextManagerFactory" %>
+<%@ page import="blackboard.data.user.User" %>
+<%@ page import="blackboard.data.course.*" %>
+<%@ page import="blackboard.persist.course.*" %>
+<%@ page import="blackboard.platform.persistence.PersistenceService" %>
+<%@ page import="blackboard.platform.persistence.PersistenceServiceFactory" %>
+<%@ page import="blackboard.persist.BbPersistenceManager"%>
+<%@ page import="blackboard.persist.*"%>
+
+ <%@ taglib uri="/bbUI" prefix="bbUI" %> 
+ <%@ taglib uri="/bbData" prefix="bbData"%> 
+ <%@ taglib uri="/bbNG" prefix="bbNG"%>
+ <bbNG:learningSystemPage 
+	title="LAB 1"
+	ctxId="ctx">
+
+	<bbNG:pageHeader>
+		<bbNG:breadcrumbBar environment="COURSE"
+			navItem="ycdb-chem109-nav-LabDebug" >
+				<bbNG:breadcrumb title="Home" href="lab0_1.jsp?course_id=@X@course.pk_string@X@&user_id=@X@user.pk_string@X@" />
+			<bbNG:breadcrumb> Lab 1 </bbNG:breadcrumb>
+		</bbNG:breadcrumbBar>
+		<bbNG:pageTitleBar>
+			Welcome to Chem 109 Lab 1
+		</bbNG:pageTitleBar>
+	</bbNG:pageHeader> 
 <!DOCTYPE html>
 
  <%
 	int dataX = 12;
  	int dataY = 3;
  	
- 	//User u = ctx.getUser();
+ 	User u = ctx.getUser();
  	String userid = "";
 	lab0_1Checks checks;
   	String courseid = request.getParameter("course_id");
   	String button = null;
   	String tableName = "ycdb_lab_data";
 	
-  	//CourseMembership crsMembership = null;
-	//CourseMembershipDbLoader crsMembershipLoader = null;
-	//PersistenceService bbPm = PersistenceServiceFactory.getInstance() ;
-    //BbPersistenceManager bpManager = bbPm.getDbPersistenceManager();
+  	CourseMembership crsMembership = null;
+	CourseMembershipDbLoader crsMembershipLoader = null;
+	PersistenceService bbPm = PersistenceServiceFactory.getInstance() ;
+    BbPersistenceManager bpManager = bbPm.getDbPersistenceManager();
  
 	String errMsg = null;
-	//crsMembershipLoader = (CourseMembershipDbLoader)bpManager.getLoader(CourseMembershipDbLoader.TYPE);
-	/*
+	crsMembershipLoader = (CourseMembershipDbLoader)bpManager.getLoader(CourseMembershipDbLoader.TYPE);
+	
 	try {
 		crsMembership = crsMembershipLoader.loadByCourseAndUserId(ctx.getCourse().getId(), u.getId());
 	} catch (KeyNotFoundException e) {
@@ -38,13 +66,13 @@
 	{
  		String cid = request.getParameter("courseMembershipId");
  		Helper h = new Helper();
- 		userid = h.getUserIdFromCourseMembershipId(ctx, cid);	 	
+ 		userid = h.getUserId(ctx, cid);
 	}
 	else
 	{
 		userid = u.getId().toExternalString();
     }
- 	*/
+ 	
 	checks = new lab0_1Checks(tableName, dataX, dataY, "userid", "courseid", 1);
 	 
  	button = request.getParameter("button");
@@ -114,17 +142,17 @@
             //perform submit
             checks.gradeLab(1, userid, courseid);
         }
-        /*
+        
         else if (button.equals("ClearAttempt"))
         {
          	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
          	{
     			GradeLogistics gl = new GradeLogistics();
 
-        		checks.clearAttempt(ctx, userid, tableName);
+        		//checks.clearAttempt(ctx, userid, tableName);
          	}
         }
-        */
+        
         else
         {
             button = "";
@@ -728,4 +756,4 @@
     <br>
     </body>
 </html>
-<!--</bbNG:learningSystemPage>-->
+</bbNG:learningSystemPage>
