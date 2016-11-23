@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schema name="ycdb_chemlabs">
-  <table name="ycdb_labs">
-    <columns name="pk1" data-type="int" nullable="false" identity="true" />
-    <columns name="lab_name" data-type="nvarchar(75)" nullable="false" identity="false" />
-    <columns name="comments" data-type="nvarchar(50)" nullable="false" identity="false" />
-	<columns name="is_active" data-type="boolean" nullable="false" identity="false" />
-    <primary-key name="ycdb_labs_pk1" comment="unique primary key">
-      <columnref name="pk1" />
-    </primary-key>
-  </table>
-  <table name="ycdb_lab_data">
-    <columns name="pk1" data-type="int" nullable="false" identity="true" />
-    <columns name="lab_number" data-type="int" nullable="false" identity="false" />
-    <columns name="user_id" data-type="nvarchar(20)" nullable="false" identity="false" />
-    <columns name="course_id" data-type="nvarchar(30)" nullable="false" identity="false" />
-    <columns name="status" data-type="int" nullable="false" identity="false" />
-    <columns name="data_set" data-type="nvarchar(500)" nullable="true" identity="false" comment="student input data" />
-    <columns name="is_correct" data-type="nvarchar(500)" nullable="true" identity="false" comment="checks and crosses for use in front end" />
-    <columns name="error_messages" data-type="nvarchar(500)" nullable="true" identity="false" />
-    <columns name="scores" data-type="nvarchar(500)" nullable="true" identity="false" />
-    <columns name="answer_key" data-type="nvarchar(500)" nullable="true" identity="false" />
-    <primary-key name="ycdb_lab_data_pk2" comment="unique primary key">
-      <columnref name="pk1" />
-    </primary-key>
-    <foreign-key name="ycdb_lab_data_fk1" reference-table="ycdb_labs" on-delete="cascade" comment="foreign key to ycdb_labs table">
-      <columnref name="pk1" />
-    </foreign-key>
-    <index name="ycdb_lab_data_ak1" unique="false">
-      <columnref name="lab_number" />
-      <columnref name="user_id" />
-      <columnref name="course_id" />
-    </index>
-  </table>
+	<table name="ycdb_labs">
+		<column name="pk1" data-type="int" nullable="false" identity="true" />
+		<column name="lab_name" data-type="varchar(75)" nullable="true" identity="false" />
+		<column name="comments" data-type="varchar(50)" nullable="true" identity="false" />
+		<column name="is_active" data-type="varchar(5)" nullable="true" identity="false" />
+		<primary-key name="ycdb_labs_pk1" comment="unique primary key">
+			<columnref name="pk1" />
+		</primary-key>
+	</table>
+	<table name="ycdb_lab_data">
+		<column name="pk1" data-type="int" nullable="false" identity="true" />
+		<column name="lab_number" data-type="int" nullable="true" identity="false" />
+		<column name="user_id" data-type="varchar(20)" nullable="true" identity="false" />
+		<column name="course_id" data-type="varchar(30)" nullable="true" identity="false" />
+		<column name="status" data-type="int" nullable="false" identity="true" />
+		<column name="data_set" data-type="varchar(500)" nullable="true" identity="false" comment="student input data" />
+		<column name="is_correct" data-type="varchar(500)" nullable="true" identity="false" comment="checks and crosses for use in front end" />
+		<column name="error_messages" data-type="varchar(500)" nullable="true" identity="false" />
+		<column name="scores" data-type="varchar(500)" nullable="true" identity="false" />
+		<column name="answer_key" data-type="varchar(500)" nullable="true" identity="false" />
+		<primary-key name="ycdb_lab_data_pk2" comment="unique primary key">
+			<columnref name="pk1" />
+		</primary-key>
+		<foreign-key name="ycdb_lab_data_fk1" reference-table="ycdb_labs" on-delete="cascade" comment="foreign key to ycdb_labs table">
+			<columnref name="pk1" />
+		</foreign-key>
+		<index name="ycdb_lab_data_ak1" unique="false">
+			<columnref name="lab_number" />
+			<columnref name="user_id" />
+			<columnref name="course_id" />
+		</index>
+	</table>
 </schema>
