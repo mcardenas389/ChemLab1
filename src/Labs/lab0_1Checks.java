@@ -1,11 +1,13 @@
 package Labs;
 
+import blackboard.platform.context.Context;
+
 public class lab0_1Checks extends inputChecks
 {
-	public lab0_1Checks(String tableName, int x, int y, 
+	public lab0_1Checks(Context ctx, String tableName, int x, int y, 
 			String userid, String courseid, int labNumber)
 	{
-        super(tableName, x, y, userid, courseid, labNumber);
+        super(ctx, tableName, x, y, userid, courseid, labNumber);
     }
  
 	@Override
@@ -30,7 +32,7 @@ public class lab0_1Checks extends inputChecks
                     	}
                     	else if(j == 2)
                     	{
-                    		k = getSigFigs(data[i][0]);
+                    		k = (data[i][j].length() - 1); //-1 for decimal point
                     		key[i][j] = Integer.toString(k);
                     	}
                     }
@@ -44,7 +46,7 @@ public class lab0_1Checks extends inputChecks
                     	}
                     	else if(j == 2)
                     	{
-                    		k = getSigFigs(data[i][0]);
+                    		k = (data[i][j].length() - 1); //-1 for decimal point
                     		key[i][j] = Integer.toString(k);
                     	}
                     }
@@ -52,13 +54,13 @@ public class lab0_1Checks extends inputChecks
                     //Number of Sig Fig Column for the calculated data
                     if ((i > 9 && i < dataX) && j == 2)
                     {
-                    	key[i][j] = "" + getSigFigs(data[i][0]);
+                        key[i][j] = "" + getSigFigs(data[i][0]);
                     }
                     
                     //Unit column
                     if((i > 1 && i < dataX) && j == 1)
                     {
-                    	key[i][j] = "g";
+                        key[i][j] = "g";
                     }
                     
                     //average weight of metal wire
@@ -71,7 +73,7 @@ public class lab0_1Checks extends inputChecks
                         temp = temp / 3;
                         String temp1 = setDecPlaces(Double.toString(temp), 4);              	
                         
-                        key[i][j] = "" + temp1;
+                       key[i][j] = "" + temp1;
                     }
                     
                     //weight of sodium chloride
@@ -103,14 +105,11 @@ public class lab0_1Checks extends inputChecks
 		double unitScore = 1.0; //score for correct unit
 		double calcScore = 4.0; //score for correct calculation
 		
-		buildKey();
-		
 		//check input for quadruple and analytical balance 
 		for(int i = 2; i < 10; ++i)
 		{
 			//check significant figures of weighed values
-			if((getDecPlaces(data[i][0]) == getDecPlaces(key[i][0]) ||
-					(getDecPlaces(data[i][0]) == getDecPlaces(key[i][0]) - 1 && key[i][0].charAt(key[i][0].length() - 1) == '0')))
+			if(data[i][0] == key[i][0])
 			{
 				isCorrect[i][0] = correctMsg;	
 				grade[i][0] = "" + sigFigScore;
@@ -124,7 +123,7 @@ public class lab0_1Checks extends inputChecks
 			}
 			
 			//check user input of significant figures
-			if(Integer.parseInt(data[i][2]) == Integer.parseInt(key[i][2]))
+			if(data[i][2] == key[i][2])
 			{
 				isCorrect[i][2] = correctMsg;	
 				grade[i][2] = "" + sigFigScore;
@@ -138,39 +137,35 @@ public class lab0_1Checks extends inputChecks
 			}
 		}
 		
-		//check significant figures and calculation of average metal weight
-		if(getSigFigs(data[10][0]) == getSigFigs(key[10][0]) && Double.parseDouble(data[10][0]) == Double.parseDouble(key[10][0]))
+		//check significant figures of average metal weight
+		if(data[10][0] == key[10][0])
 		{
 			isCorrect[10][0] = correctMsg;
-			grade[10][0] = "" + sigFigScore + ", " + calcScore;
-			gradeTotal += sigFigScore + calcScore;
-		}
-		else if(getSigFigs(data[10][0]) != getSigFigs(key[10][0]) && Double.parseDouble(data[10][0]) != Double.parseDouble(key[10][0]))
-		{
-			isCorrect[10][0] = errorMsg;
-			grade[10][0] = "-" + sigFigScore + ", -" + calcScore; //deducted points
-			error[10][0] = errorTypes[0] + ", " + errorTypes[1]; //sig fig error and calculation error
+			grade[10][0] = "" + sigFigScore;
+			gradeTotal += sigFigScore;
 		}
 		else
 		{
 			isCorrect[10][0] = errorMsg;
-			
-			if(getSigFigs(data[10][0]) != getSigFigs(key[10][0]))
-			{
-				grade[10][0] = "-" + sigFigScore; //deducted points
-				error[10][0] = errorTypes[0]; //sig fig error
-				gradeTotal += calcScore;
-			}			
-			else if(Double.parseDouble(data[10][0]) != Double.parseDouble(key[10][0]))
-			{
-				grade[10][0] += "-" + calcScore; //deducted points
-				error[10][0] += errorTypes[1]; //calculation error
-				gradeTotal += sigFigScore;
-			}
+			grade[10][0] = "-" + sigFigScore; //deducted points
+			error[10][0] = errorTypes[0]; //sig fig error
 		}
 
+		//check calculation of average metal weight
+		if(Double.parseDouble(data[10][0]) == Double.parseDouble(key[10][0]))
+		{
+			grade[10][0] += "," + calcScore;
+			gradeTotal += calcScore;
+		}
+		else
+		{
+			isCorrect[10][0] = errorMsg;
+			grade[10][0] += ",-" + calcScore; //deducted points
+			error[10][0] += "," + errorTypes[1]; //calculation error
+		}
+		
 		//check significant figure field of average metal weight
-		if(Integer.parseInt(data[10][2]) == Integer.parseInt(key[10][2]))
+		if(data[10][2] == key[10][2])
 		{
 			isCorrect[10][2] = correctMsg;
 			grade[10][2] = "" + sigFigScore;
@@ -183,39 +178,35 @@ public class lab0_1Checks extends inputChecks
 			error[10][2] = errorTypes[0]; //sig fig error
 		}
 		
-		//check significant figure and calculation of sodium chloride weight
-		if(getSigFigs(data[11][0]) == getSigFigs(key[11][0]) && Double.parseDouble(data[11][0]) == Double.parseDouble(key[11][0]))
+		//check significant figure field of sodium chloride weight
+		if(data[11][0] == key[11][0])
 		{
 			isCorrect[11][0] = correctMsg;
-			grade[11][0] = "" + sigFigScore + ", " + calcScore;
-			gradeTotal += sigFigScore + calcScore;
-		}
-		else if(getSigFigs(data[11][0]) != getSigFigs(key[11][0]) && Double.parseDouble(data[11][0]) != Double.parseDouble(key[11][0]))
-		{
-			isCorrect[11][0] = errorMsg;
-			grade[11][0] = "-" + sigFigScore + ", -" + calcScore; //deducted points
-			error[11][0] = errorTypes[0] + ", " + errorTypes[1]; //sig fig error and calculation error
+			grade[11][0] = "" + sigFigScore;
+			gradeTotal += sigFigScore;
 		}
 		else
 		{
 			isCorrect[11][0] = errorMsg;
-			
-			if(getSigFigs(data[11][0]) != getSigFigs(key[10][0]))
-			{
-				grade[11][0] = "-" + sigFigScore; //deducted points
-				error[11][0] = errorTypes[0]; //sig fig error
-				gradeTotal += calcScore;
-			}			
-			else if(Double.parseDouble(data[11][0]) != Double.parseDouble(key[11][0]))
-			{
-				grade[11][0] = "-" + calcScore; //deducted points
-				error[11][0] = errorTypes[1]; //calculation error
-				gradeTotal += sigFigScore;
-			}
+			grade[11][0] = "-" + sigFigScore;
+			error[11][0] = errorTypes[0]; //sig fig error
+		}
+		
+		//check calculation of sodium chloride weight
+		if(Double.parseDouble(data[11][0]) == Double.parseDouble(key[11][0]))
+		{
+			grade[11][0] += "," + calcScore;
+			gradeTotal += calcScore;
+		}
+		else
+		{
+			isCorrect[11][0] = errorMsg;
+			grade[11][0] += ",-" + calcScore;
+			error[11][0] += "," + errorTypes[1]; //calculation error
 		}
 		
 		//check significant figure field of sodium chloride weight
-		if(Integer.parseInt(data[11][2]) == Integer.parseInt(key[11][2]))
+		if(data[11][2] == key[11][2])
 		{
 			isCorrect[11][2] = correctMsg;
 			grade[11][2] = "" + sigFigScore;
@@ -231,7 +222,7 @@ public class lab0_1Checks extends inputChecks
 		//check units
 		for(int i = 2; i < dataX; ++i)
 		{
-			if(data[i][1].charAt(0) == key[i][1].charAt(0))
+			if(data[i][1] == key[i][1])
 			{
 				isCorrect[i][1] = correctMsg;
 				grade[i][1] = "" + unitScore;
@@ -245,6 +236,6 @@ public class lab0_1Checks extends inputChecks
 			}
 		}
 		
-		//submit(labNumber, userid, courseid, gradeTotal);
+		submit(labNumber, userid, courseid, gradeTotal);
 	}
 }
