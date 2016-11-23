@@ -1,2 +1,1 @@
 pk2	lab_number	user_id	course_id	status	data_set	is_correct	error_messages	scores	answer_key
-0	0	0	0	0	0	0	0	0	0
