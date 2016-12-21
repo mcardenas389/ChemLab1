@@ -37,8 +37,10 @@
  	int dataY = 3;
  	
  	User u = ctx.getUser();
- 	String userid = "";
+ 	String userid = u.getId().toExternalString();
+ 	
 	lab0_1Checks checks;
+	
   	String courseid = request.getParameter("course_id");
   	String button = null;
   	String tableName = "ycdb_lab_data";
@@ -50,7 +52,7 @@
  
 	String errMsg = null;
 	crsMembershipLoader = (CourseMembershipDbLoader)bpManager.getLoader(CourseMembershipDbLoader.TYPE);
-	
+	/*
 	try {
 		crsMembership = crsMembershipLoader.loadByCourseAndUserId(ctx.getCourse().getId(), u.getId());
 	} catch (KeyNotFoundException e) {
@@ -60,8 +62,9 @@
 			// There is no membership record.
 			errMsg = "An error occured while loading the User. Better check this out:" + pe;
 	}
+	
 	CourseMembership.Role crsMembershipRole = crsMembership.getRole();
-	 
+	
  	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
 	{
  		String cid = request.getParameter("courseMembershipId");
@@ -72,40 +75,15 @@
 	{
 		userid = u.getId().toExternalString();
     }
- 	
-	checks = new lab0_1Checks(tableName, dataX, dataY, "userid", "courseid", 1);
-	 
+ 	*/
+	checks = new lab0_1Checks(tableName, dataX, dataY, userid, courseid, 1);
+	
  	button = request.getParameter("button");
 	
  	if (button == null)
     {
-        button = "";
-	    
-        //set types
-        /*
-        checks.setType(0, 0, "String");
-        checks.setType(1, 0, "String");
-        
-        for (int i = 2; i < dataX; i++)
-        {
-            for (int j = 0; j < dataY; j++)
-            {
-                if (j == 0)
-                {
-                    checks.setType(i, j, "Double");
-                }
-                else if (j == 1)
-                {
-                    checks.setType(i, j, "Unit");
-                }
-                else 
-                {
-                    checks.setType(i, j, "Integer");
-                }
-            }
-        }
-        */
-     }     
+        button = "";        
+    }     
      else
      {
     	if(button.equals("Save") || button.equals("Check") || button.equals("Submit"))
@@ -132,34 +110,36 @@
         else if (button.equals("Check"))
         {              
             //perform checks
-            checks.gradeLab(1, "userid", "courseid");
+            checks.gradeLab(1, userid, courseid);
         }
         else if (button.equals("Submit"))
         {
-        	GradeLogistics gl = new GradeLogistics();
+        	//GradeLogistics gl = new GradeLogistics();
         	//LineItem lineitem = gl.makeLineItem("CHEM 109 - Lab 1", "lab0_1.jsp", 100, ctx);//not sure if we should call make or getlineitem
+        	
         	//gl.addStudentAttempts(ctx, 1, "lab0_1.jsp", lineitem);
-            //perform submit
+            
+        	//perform submit
             checks.gradeLab(1, userid, courseid);
-        }
-        
+        }        
         else if (button.equals("ClearAttempt"))
         {
+        	/*
          	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
          	{
     			GradeLogistics gl = new GradeLogistics();
 
-        		//checks.clearAttempt(ctx, userid, tableName);
+        		checks.clearAttempt(ctx, userid, tableName);
          	}
-        }
-        
+        	*/
+        }        
         else
         {
             button = "";
         }
-        button="";
-    }
- 
+        
+        button = "";
+     }
  %>
  
 <html>
@@ -178,6 +158,11 @@
 					d.appendChild(b);
 	     		}
 	     	
+        	function displayAlert(message)
+        	{
+        		alert(message);
+        	}
+        	
         	function loadMassData()
         	{
         		loadMass1();
@@ -266,8 +251,8 @@
     <body onload="loadMassData()">
     	<p>User Information</p>  
   	<p style="margin-left:10px">
-  		Name: <br />   
-  		Student Id: <br />   
+  		Name: <%= u.getGivenName()%> <%= u.getFamilyName() %><br />   
+		Student Id: <%= u.getId().toExternalString()%> <br />    
  	</p>    
     	<fieldset class="fieldset-auto-width">
             <legend>Lab 1: Weighing Measurements: The Balance</legend>
@@ -334,7 +319,7 @@
                             Metal rod
                         </td>
                         <td>
-                            <input type="text" name="20" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(2,0) != null){out.print("value=\"" + checks.getData(2,0) + "\"");}%> />
+                            <input type="text" name="20" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(2,0) != null){out.print("value=\"" + checks.getData(2,0) + "\"");}%> required />
                         </td>
                         <td>
                             <select name="21" id="mass1" required>
@@ -344,7 +329,7 @@
 							</select> 
                         </td>
                         <td>
-                            <input type="text" name="22" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(2,2) != null){out.print("value=\"" + checks.getData(2,2) + "\"");}%> />
+                            <input type="text" name="22" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(2,2) != null){out.print("value=\"" + checks.getData(2,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -371,7 +356,7 @@
                             Vial + Sodium chloride
                         </td>
                         <td>
-                            <input type="text" name="30" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(3,0) != null){out.print("value=\"" + checks.getData(3,0) + "\"");}%> />
+                            <input type="text" name="30" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(3,0) != null){out.print("value=\"" + checks.getData(3,0) + "\"");}%> required />
                         </td>
                         <td>
                             <select name="31" id="mass2" required>
@@ -381,7 +366,7 @@
 							</select> 
                         </td>
                         <td>
-                            <input type="text" name="32" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(3,2) != null){out.print("value=\"" + checks.getData(3,2) + "\"");}%> />
+                            <input type="text" name="32" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(3,2) != null){out.print("value=\"" + checks.getData(3,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -419,7 +404,7 @@
                             Metal rod
                         </td>
                         <td>
-                            <input type="text" name="40" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(4,0) != null){out.print("value=\"" + checks.getData(4,0) + "\"");}%> />
+                            <input type="text" name="40" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(4,0) != null){out.print("value=\"" + checks.getData(4,0) + "\"");}%> required />
                         </td>
                         <td>
                             <select name="41" id="mass3" required>
@@ -429,7 +414,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="42" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(4,2) != null){out.print("value=\"" + checks.getData(4,2) + "\"");}%> />
+                            <input type="text" name="42" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(4,2) != null){out.print("value=\"" + checks.getData(4,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -466,7 +451,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="52" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(5,2) != null){out.print("value=\"" + checks.getData(5,2) + "\"");}%> />
+                            <input type="text" name="52" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(5,2) != null){out.print("value=\"" + checks.getData(5,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -503,7 +488,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="62" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(6,2) != null){out.print("value=\"" + checks.getData(6,2) + "\"");}%> />
+                            <input type="text" name="62" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(6,2) != null){out.print("value=\"" + checks.getData(6,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -540,7 +525,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="72" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(7,2) != null){out.print("value=\"" + checks.getData(7,2) + "\"");}%> />
+                            <input type="text" name="72" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(7,2) != null){out.print("value=\"" + checks.getData(7,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -577,7 +562,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="82" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(8,2) != null){out.print("value=\"" + checks.getData(8,2) + "\"");}%> />
+                            <input type="text" name="82" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(8,2) != null){out.print("value=\"" + checks.getData(8,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -614,7 +599,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="92" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(9,2) != null){out.print("value=\"" + checks.getData(9,2) + "\"");}%> />
+                            <input type="text" name="92" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(9,2) != null){out.print("value=\"" + checks.getData(9,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -661,7 +646,7 @@
                             Average weight of metal wire
                         </td>
                         <td>
-                            <input type="text" name="100" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(10,0) != null){out.print("value=\"" + checks.getData(10,0) + "\"");}%> />
+                            <input type="text" name="100" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(10,0) != null){out.print("value=\"" + checks.getData(10,0) + "\"");}%> required />
                         </td>
                         <td>
                             <select name="101" id="mass9" required>
@@ -671,7 +656,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="102" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(10,2) != null){out.print("value=\"" + checks.getData(10,2) + "\"");}%> />
+                            <input type="text" name="102" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(10,2) != null){out.print("value=\"" + checks.getData(10,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -700,7 +685,7 @@
                             removed from vial 
                         </td>
 			<td>
-                            <input type="text" name="110" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(11,0) != null){out.print("value=\"" + checks.getData(11,0) + "\"");}%> />
+                            <input type="text" name="110" pattern="\d+\.\d+" title="only decimals" <% if (checks.getData(11,0) != null){out.print("value=\"" + checks.getData(11,0) + "\"");}%> required />
                         </td>
                         <td>
                             <select name="111" id="mass10" required>
@@ -710,7 +695,7 @@
 							</select>
                         </td>
                         <td>
-                            <input type="text" name="112" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(11,2) != null){out.print("value=\"" + checks.getData(11,2) + "\"");}%> />
+                            <input type="text" name="112" pattern="[0-9]+" title="only whole numbers" <% if (checks.getData(11,2) != null){out.print("value=\"" + checks.getData(11,2) + "\"");}%> required />
                         </td>
                     </tr>
                     <tr>
@@ -742,7 +727,7 @@
 		            	<div style="text-align: center" id="btns">
                 			<input type="submit" name="button" value="Clear" />
                 			<input type="submit" name="button" value="Check" />
-                			<input type="submit" name="button" value="Save" />
+                			<input type="submit" name="button" value="Save" onclick="displayAlert('Lab was saved.')"/>
                 			<input type="submit" name="button" value="Submit" />
 							<p>Student View [Test Page]</p>
             			</div>
