@@ -10,6 +10,9 @@
 
 package Labs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class inputChecks 
 {    
     protected int dataX; //number of rows
@@ -25,8 +28,9 @@ public class inputChecks
     protected String correctMsg = "&#10004;"; // ✔ (hex: &#x2714; / dec: &#10004;): heavy check mark
     protected String tableName; //stores the name of the data table
     
-    //private DataLoader load;
-    //private DataPersister save;
+    private DataLoader load;
+    private DataPersister save;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataPersister.class.getName() );
     
     //constructor that also calls initData()
 	public inputChecks(String tableName, int X, int Y, 
@@ -34,8 +38,8 @@ public class inputChecks
     {
         dataX = X;
         dataY = Y;
-        //load = new DataLoader();
-        //save = new DataPersister();
+        load = new DataLoader();
+        save = new DataPersister();
         
         data = new String[dataX][dataY]; //stores lab data
         error = new String[dataX][dataY]; //stores error messages
@@ -44,9 +48,9 @@ public class inputChecks
         grade = new String[dataX][dataY]; //the grade given for each correct answer
 
         
-        String tempData = "108, , ,22, , ,33.43,g,4,39.87,g,4,33.5237,g,6,0.5319,g,4,0.5321,g,4,0.5321,g,4,0.9067,g,4,0.4145,g,4,0.5320,g,4,0.4922,g,4";
-        //String tempData = "";
-        //tempData = load.restoreLab(tableName, labNumber, userid, courseid); //get lab data
+        //String tempData = "108, , ,22, , ,33.43,g,4,39.87,g,4,33.5237,g,6,0.5319,g,4,0.5321,g,4,0.5321,g,4,0.9067,g,4,0.4145,g,4,0.5320,g,4,0.4922,g,4";
+        String tempData = "";
+        tempData = load.restoreLab(tableName, labNumber, userid, courseid); //get lab data
         
         initData(tempData);
     }
@@ -560,7 +564,7 @@ public class inputChecks
         }
         
         //save to back end
-        //save.saveData(tableName, labNumber, userid, courseid, inData);
+        save.saveData(tableName, labNumber, userid, courseid, inData);
     }
     
     public void check()
@@ -664,15 +668,13 @@ public class inputChecks
         }
         
         saveScores += "," + gradeTotal;
-        /*
+        
         boolean flag = save.submitData(tableName, labNumber, userid, courseid, 
         		inData, saveIsCorrect, saveErrorMsgs, saveScores, saveKey);
         
         if(flag)
         	LOGGER.debug("Data submitted.");
-        */
-        //save.saveGrade(theString);
-
+        
         //set submitted
         //save.submitted(ctx, labname, jspname);
     }
