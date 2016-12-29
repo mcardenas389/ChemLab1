@@ -109,8 +109,7 @@ public class lab0_1Checks extends inputChecks
 		for(int i = 2; i < 10; ++i)
 		{
 			//check significant figures of weighed values
-			if((getDecPlaces(data[i][0]) == getDecPlaces(key[i][0]) ||
-					(getDecPlaces(data[i][0]) == getDecPlaces(key[i][0]) - 1 && key[i][0].charAt(key[i][0].length() - 1) == '0')))
+			if(getDecPlaces(data[i][0]) == getDecPlaces(key[i][0]))
 			{
 				isCorrect[i][0] = correctMsg;	
 				grade[i][0] = "" + sigFigScore;
