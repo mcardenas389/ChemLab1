@@ -1,11 +1,8 @@
 package Labs;
-
-import blackboard.platform.context.Context;
-
  
 public class lab0_2Checks extends inputChecks
 {
-	public lab0_2Checks(Context ctx, String tableName, int x, int y, 
+	public lab0_2Checks(String tableName, int x, int y, 
 			String userid, String courseid, int labNumber)
 	{
         super(tableName, x, y, userid, courseid, labNumber);
@@ -14,13 +11,13 @@ public class lab0_2Checks extends inputChecks
     @Override
     protected void buildKey()
     {
-    	int k = 15; //used as iterator for calculating volume and weight of liquid in beaker
+    	int k = 6; //used as iterator for calculating volume and weight of liquid in beaker
     	
         for(int i = 0; i < dataX; i ++)
         {
-            for(int j = 0; j < dataY; j++)
+        	for(int j = 0; j < dataY; j++)
             {
-                if(data[i][j] != null && !data[i][j].equals(""))
+            	if(data[i][j] != null && !data[i][j].equals(""))
                 {
                     key[i][j] = "*";
                     
@@ -73,6 +70,8 @@ public class lab0_2Checks extends inputChecks
 	                    
 	                    if (i > 20 && i < 25) //total weight of liquid in beaker
 	                    {
+	                    	if(i == 21) k = 11;
+	                    	
 	                    	double temp;
 	                    	
 	                    	temp = Double.parseDouble(key[k++][j]) -
@@ -88,11 +87,11 @@ public class lab0_2Checks extends inputChecks
                     }
                     else if(j == 1) //units
                     {
-                    	if(i == 1 || (i > 9 && i < 14) || (i > 20 && i < 25))
+                    	if(i == 1 || (i > 9 && i < 15) || (i > 20 && i < 25))
                     	{
                     		key[i][j] = "g";
                     	}                    	
-                    	else if((i > 4 && i < 10) || (i > 16 && i < 21))
+                    	else if((i > 1 && i < 4) || (i > 4 && i < 10) || (i > 16 && i < 21))
                     	{
                     		key[i][j] = "mL";
                     	}                    	
@@ -121,15 +120,23 @@ public class lab0_2Checks extends inputChecks
 		double unitScore = 1.0; //score for correct unit
 		double calcScore = 1.0; //score for correct calculation
 		
+		buildKey();
+		
     	for(int i = 0; i < dataX; i++)
     	{
+    		System.out.println("i = " + i);
+            
     		for(int j = 0; j < dataY; j++)
     		{
+    			System.out.println("j = " + j);
+            	System.out.println("data = " + data[i][j]);
+            	System.out.println("key = " + key[i][j]);
+                
     			if(j == 0)
     			{
-    				if((i > 0 && i < 4) || (i > 4 && i < dataX))
+    				if((i > 0 && i < 4) || (i > 4 && i < 15))
     				{
-    					if(data[i][j] == key[i][j])
+    					if(getSigFigs(data[i][j]) == getSigFigs(key[i][j]))
         				{
         					isCorrect[i][j] = correctMsg;
         					grade[i][j] = "" + sigFigScore;
@@ -141,27 +148,46 @@ public class lab0_2Checks extends inputChecks
         					grade[i][j] = "-" + sigFigScore; //deducted points
         					error[i][j] = errorTypes[0]; //significant figure error    					
         				}
+    				}
     					
-    					if(i > 14 && i < 25)
+    				if(i > 14 && i < dataX)
+    				{
+    					System.out.println("Entered calculation field");
+    					if((getSigFigs(data[i][j]) == getSigFigs(key[i][j]) && Double.parseDouble(data[i][j]) == Double.parseDouble(key[i][j])))
     					{
-    						if(Double.parseDouble(data[i][j]) == Double.parseDouble(key[i][j]))
-    						{
-            					isCorrect[i][j] = correctMsg;
-            					grade[i][j] = "" + calcScore;
-            					gradeTotal += calcScore;
+    						System.out.println("both correct");
+            				isCorrect[i][j] = correctMsg;
+            				grade[i][j] = "" + sigFigScore + ", " + calcScore;
+            				gradeTotal += sigFigScore + calcScore;
+            			}
+    					else if((getSigFigs(data[i][j]) != getSigFigs(key[i][j]) && Double.parseDouble(data[i][j]) != Double.parseDouble(key[i][j])))
+    					{
+    						System.out.println("both incorrect");
+    						isCorrect[i][j] = errorMsg;
+            				grade[i][j] = "-" + sigFigScore + ", -" + calcScore;
+            				error[i][j] = errorTypes[0] + ", " + errorTypes[1]; //sig fig error and calculation error
+    					}
+            			else
+            			{
+            				System.out.println("one incorrect");
+            				isCorrect[i][j] = errorMsg;
+            				
+            				if(getSigFigs(data[i][j]) != getSigFigs(key[i][j]))
+            				{
+            					grade[i][j] += "-" + sigFigScore; //deducted points
+            					error[i][j] += "" + errorTypes[0]; //significant figure error 
             				}
             				else
             				{
-            					isCorrect[i][j] = errorMsg;
-            					grade[i][j] = ",-" + calcScore; //deducted points
-            					error[i][j] = "," + errorTypes[1]; //significant figure error    					
-            				}
-    					}
+            					grade[i][j] += "-" + calcScore; //deducted points
+            					error[i][j] += "" + errorTypes[1]; //significant figure error 
+            				}            				   					
+            			}
     				}
     			}
     			else if(j == 1)
     			{
-    				if(data[i][j] == key[i][j])
+    				if(key[i][j].equalsIgnoreCase(data[i][j]))
     				{
     					isCorrect[i][j] = correctMsg;
     					grade[i][j] = "" + unitScore;
@@ -171,7 +197,7 @@ public class lab0_2Checks extends inputChecks
     				{
     					String[] choices = key[i][j].split(",");
     					
-    					if(data[i][j] == choices[0] || data[i][j] == choices[1])
+    					if(data[i][j].equalsIgnoreCase(choices[0]) || data[i][j].equalsIgnoreCase(choices[1]))
     					{
     						isCorrect[i][j] = correctMsg;
         					grade[i][j] = "" + unitScore;
