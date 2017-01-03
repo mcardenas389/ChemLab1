@@ -73,7 +73,7 @@
  	if (crsMembershipRole == CourseMembership.Role.INSTRUCTOR)
 	{
  		String cid = request.getParameter("courseMembershipId");
- 		userid = h.getUserIdFromCourseMembershipId(ctx, cid);	 	
+ 		userid = h.getUserId(ctx, cid);	 	
 	}
 	else
 	{
@@ -148,7 +148,7 @@
 									<%=data[1][0]%>
 								</td>
 								<td>
-									<%=data[1][1]%>"
+									<%=data[1][1]%>
 								</td>
 							</tr>
 							<tr>
@@ -711,9 +711,15 @@
 						<legend>B. Determination of the density of an unkown liquid</legend>
 						<table>
 						<th></th>
-						<th>Total Volume of Liquid in Beaker</th>
+						<th>
+							Total Volume of <br>
+							Liquid in Beaker
+						</th>
 						<th>Unit</th>
-						<th>Total Weight of Liquid in Beaker</th>
+						<th>
+							Total Weight of <br>
+							Liquid in Beaker
+						</th>
 						<th>Unit</th>
 						<tr>
 							<td>After 1st sample added to beaker</td>
@@ -723,11 +729,57 @@
 							<td><%=data[21][1]%></td>
 						</tr>
 						<tr>
+							<td></td>
+							<td>
+								<div style="color: red" >
+									<% if (error[17][0] != "") { out.print(error[17][0] + " " + scores[17][0] + " " + isCorrect[17][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[17][1] != "") { out.print(error[17][1] + " " + scores[17][1] + " " + isCorrect[17][1]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[21][0] != "") { out.print(error[21][0] + " " + scores[21][0] + " " + isCorrect[21][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[21][1] != "") { out.print(error[21][1] + " " + scores[21][1] + " " + isCorrect[21][1]); } %>
+								</div>
+							</td>
+						</tr>
+						<tr>
 							<td>After 2nd sample added to beaker</td>
 							<td><%=data[18][0]%></td>
 							<td><%=data[18][1]%></td>
 							<td><%=data[22][0]%></td>
 							<td><%=data[22][1]%></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div style="color: red" >
+									<% if (error[18][0] != "") { out.print(error[18][0] + " " + scores[18][0] + " " + isCorrect[18][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[18][1] != "") { out.print(error[18][1] + " " + scores[18][1] + " " + isCorrect[18][1]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[22][0] != "") { out.print(error[22][0] + " " + scores[22][0] + " " + isCorrect[22][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[22][1] != "") { out.print(error[22][1] + " " + scores[22][1] + " " + isCorrect[22][1]); } %>
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td>After 3rd sample added to beaker</td>
@@ -737,11 +789,57 @@
 							<td><%=data[23][1]%></td>
 						</tr>
 						<tr>
+							<td></td>
+							<td>
+								<div style="color: red" >
+									<% if (error[19][0] != "") { out.print(error[19][0] + " " + scores[19][0] + " " + isCorrect[19][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[19][1] != "") { out.print(error[19][1] + " " + scores[19][1] + " " + isCorrect[19][1]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[23][0] != "") { out.print(error[23][0] + " " + scores[23][0] + " " + isCorrect[23][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[23][1] != "") { out.print(error[23][1] + " " + scores[23][1] + " " + isCorrect[23][1]); } %>
+								</div>
+							</td>
+						</tr>
+						<tr>
 							<td>After 4th sample added to beaker</td>
 							<td><%=data[20][0]%></td>
 							<td><%=data[20][1]%></td>
 							<td><%=data[24][0]%></td>
 							<td><%=data[24][1]%></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div style="color: red" >
+									<% if (error[20][0] != "") { out.print(error[20][0] + " " + scores[20][0] + " " + isCorrect[20][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[20][1] != "") { out.print(error[20][1] + " " + scores[20][1] + " " + isCorrect[20][1]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[24][0] != "") { out.print(error[24][0] + " " + scores[24][0] + " " + isCorrect[24][0]); } %>
+								</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[24][1] != "") { out.print(error[24][1] + " " + scores[24][1] + " " + isCorrect[24][1]); } %>
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td>Density of unknown liquid</td>
@@ -750,6 +848,19 @@
 							<td>(slope of the line resulting from the plot of M versus V)</td >
 							<td><%=data[25][0]%></td>
 							<td><%=data[25][1]%></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+							<div style="color: red" >
+								<% if (error[25][0] != "") { out.print(error[25][0] + " " + scores[25][0] + " " + isCorrect[25][0]); } %>
+							</div>
+							</td>
+							<td>
+								<div style="color: red" >
+									<% if (error[25][1] != "") { out.print(error[25][1] + " " + scores[25][1] + " " + isCorrect[25][1]); } %>
+								</div>
+							</td>
 						</tr>
 						</table>
 					</fieldset>

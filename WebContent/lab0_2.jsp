@@ -42,6 +42,7 @@
  	String userid = "";
 	lab0_2Checks checks;
   	String courseid = request.getParameter("course_id");
+  	String tableName = "ycdb_lab_data";
 
     String button = "";
    	String c = request.getParameter("course_id");
@@ -69,7 +70,7 @@
 	{
  		String cid = request.getParameter("courseMembershipId");
  		Helper h = new Helper();
- 		userid = h.getUserIdFromCourseMembershipId(ctx, cid);
+ 		userid = h.getUserId(ctx, cid);
  	 	
 	}
 	else
@@ -77,7 +78,7 @@
 		userid = u.getId().toExternalString();
 	}
 
-	checks = new lab0_2Checks(ctx, dataX, dataY, "ycdb_chemistrylab2",  userid, courseid);
+	checks = new lab0_2Checks(tableName, dataX, dataY, userid, courseid, 2);
 	button = request.getParameter("button");
 		
     if (button == null)
@@ -117,7 +118,7 @@
         {
               
             //perform save
-            checks.save("ycdb_chemistrylab2",userid,courseid);
+            checks.save(2, userid, courseid);
         }
         else if (button.equals("Check"))
         {
@@ -130,10 +131,10 @@
         {
              
             //perform save
-            checks.save("ycdb_chemistrylab2", userid, courseid);
+            checks.save(2, userid, courseid);
             
             //perform submit
-            checks.submit(ctx,"ycdb_chemistrylab2", "lab0_2.jsp");
+            checks.submit(2, userid, courseid, 100);
         }
         else
         {
@@ -146,8 +147,181 @@
     <head>
         <title>Lab 2: Volume Measurements and the Determination of Density</title>
         <link rel="stylesheet" href="labs_css.css">
+        <script>
+        	function loadUnitData()
+        	{
+        		loadUnit1();
+        		loadUnit2();
+        		loadUnit3();
+        		loadUnit4();
+        		loadUnit5();
+        		loadUnit6();
+        		loadUnit7();
+        		loadUnit8();
+        		loadUnit9();
+        		loadUnit10();
+        		loadUnit11();
+        		loadUnit12();
+        		loadUnit13();
+        		loadUnit14();
+        		loadUnit15();
+        		loadUnit16();
+        		loadUnit17();
+        		loadUnit18();
+        		loadUnit19();
+        		loadUnit20();
+        		loadUnit21();
+        		loadUnit22();
+        		loadUnit23();
+        		loadUnit24();
+        	}
+        	
+        	function loadUnit1()
+        	{
+        		var element = document.getElementById('unit1');
+	     		element.value = '<%=checks.getData(1,1)%>';
+        	}
+        	
+        	function loadUnit2()
+        	{
+        		var element = document.getElementById('unit2');
+	     		element.value = '<%=checks.getData(2,1)%>';
+        	}
+        	
+        	function loadUnit3()
+        	{
+        		var element = document.getElementById('unit3');
+	     		element.value = '<%=checks.getData(3,1)%>';
+        	}
+        	
+        	function loadUnit4()
+        	{
+        		var element = document.getElementById('unit4');
+	     		element.value = '<%=checks.getData(5,1)%>';
+        	}
+        	
+        	function loadUnit5()
+        	{
+        		var element = document.getElementById('unit5');
+	     		element.value = '<%=checks.getData(6,1)%>';
+        	}
+        	
+        	function loadUnit6()
+        	{
+        		var element = document.getElementById('unit6');
+	     		element.value = '<%=checks.getData(7,1)%>';
+        	}
+        	
+        	function loadUnit7()
+        	{
+        		var element = document.getElementById('unit7');
+	     		element.value = '<%=checks.getData(8,1)%>';
+        	}
+        	
+        	function loadUnit8()
+        	{
+        		var element = document.getElementById('unit8');
+	     		element.value = '<%=checks.getData(9,1)%>';
+        	}
+        	
+        	function loadUnit9()
+        	{
+        		var element = document.getElementById('unit9');
+	     		element.value = '<%=checks.getData(10,1)%>';
+        	}
+        	
+        	function loadUnit10()
+        	{
+        		var element = document.getElementById('unit10');
+	     		element.value = '<%=checks.getData(11,1)%>';
+        	}
+        	
+        	function loadUnit11()
+        	{
+        		var element = document.getElementById('unit11');
+	     		element.value = '<%=checks.getData(12,1)%>';
+        	}
+        	
+        	function loadUnit12()
+        	{
+        		var element = document.getElementById('unit12');
+	     		element.value = '<%=checks.getData(13,1)%>';
+        	}
+        	
+        	function loadUnit13()
+        	{
+        		var element = document.getElementById('unit13');
+	     		element.value = '<%=checks.getData(14,1)%>';
+        	}
+        	
+        	function loadUnit14()
+        	{
+        		var element = document.getElementById('unit14');
+	     		element.value = '<%=checks.getData(15,1)%>';
+        	}
+        	
+        	function loadUnit15()
+        	{
+        		var element = document.getElementById('unit15');
+	     		element.value = '<%=checks.getData(16,1)%>';
+        	}
+        	
+        	function loadUnit16()
+        	{
+        		var element = document.getElementById('unit16');
+	     		element.value = '<%=checks.getData(17,1)%>';
+        	}
+        	
+        	function loadUnit17()
+        	{
+        		var element = document.getElementById('unit17');
+	     		element.value = '<%=checks.getData(18,1)%>';
+        	}
+        	
+        	function loadUnit18()
+        	{
+        		var element = document.getElementById('unit18');
+	     		element.value = '<%=checks.getData(19,1)%>';
+        	}
+        	
+        	function loadUnit19()
+        	{
+        		var element = document.getElementById('unit19');
+	     		element.value = '<%=checks.getData(20,1)%>';
+        	}
+        	
+        	function loadUnit20()
+        	{
+        		var element = document.getElementById('unit20');
+	     		element.value = '<%=checks.getData(21,1)%>';
+        	}
+        	
+        	function loadUnit21()
+        	{
+        		var element = document.getElementById('unit21');
+	     		element.value = '<%=checks.getData(22,1)%>';
+        	}
+        	
+        	function loadUnit22()
+        	{
+        		var element = document.getElementById('unit22');
+	     		element.value = '<%=checks.getData(23,1)%>';
+        	}
+        	
+        	function loadUnit23()
+        	{
+        		var element = document.getElementById('unit23');
+	     		element.value = '<%=checks.getData(24,1)%>';
+        	}
+        	
+        	function loadUnit24()
+        	{
+        		var element = document.getElementById('unit24');
+	     		element.value = '<%=checks.getData(25,1)%>';
+        	}
+        </script>
     </head>
-    <body>
+    <body onload="loadUnitData()">
         <fieldset class="fieldset-auto-width">
             <legend>Lab 2: Volume Measurements and the Determination of Density</legend>
             <form method="POST">
@@ -165,13 +339,6 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                </td>
-                                <td>
-                                    <div style="color: red" >
-                                        <% if (checks.getError(0,0) != null){out.print(checks.getError(0, 0));} %>
-                                    </div>
-                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -179,7 +346,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="10" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(1,0) != null){out.print("value=\"" + checks.getData(1,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(1,1) != null){out.print("value=\"" + checks.getData(1,1) + "\"");}%> >
+                                </td>
+								<td>
+									<select name="11" id="unit1" required <% if (checks.getData(1,1) != null){out.print("value=\"" + checks.getData(1,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -210,7 +379,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="20" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(2,0) != null){out.print("value=\"" + checks.getData(2,0) + "\"");}%> /><!-- 1 decimal places -->
-									<select required <% if (checks.getData(2,1) != null){out.print("value=\"" + checks.getData(2,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="21" id="unit2" required <% if (checks.getData(2,1) != null){out.print("value=\"" + checks.getData(2,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -241,7 +412,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="30" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(3,0) != null){out.print("value=\"" + checks.getData(3,0) + "\"");}%> /><!-- 1 decimal places -->
-									<select required <% if (checks.getData(3,1) != null){out.print("value=\"" + checks.getData(3,1) + "\"");}%> >
+								</td>
+                                <td>
+									<select name="31" id="unit3" required <% if (checks.getData(3,1) != null){out.print("value=\"" + checks.getData(3,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -302,7 +475,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="50" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(5,0) != null){out.print("value=\"" + checks.getData(5,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(5,1) != null){out.print("value=\"" + checks.getData(5,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="51" id="unit4" required <% if (checks.getData(5,1) != null){out.print("value=\"" + checks.getData(5,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -317,7 +492,7 @@
                                 </td>
                                 <td>
                                     <input type="text" name="100" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(10,0) != null){out.print("value=\"" + checks.getData(10,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(10,1) != null){out.print("value=\"" + checks.getData(10,1) + "\"");}%> >
+									<select name="101" id="unit9" required <% if (checks.getData(10,1) != null){out.print("value=\"" + checks.getData(10,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -360,7 +535,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="60" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(6,0) != null){out.print("value=\"" + checks.getData(6,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(6,1) != null){out.print("value=\"" + checks.getData(6,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="61" id="unit5" required <% if (checks.getData(6,1) != null){out.print("value=\"" + checks.getData(6,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -375,7 +552,7 @@
                                 </td>
                                 <td>
                                     <input type="text" name="110" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(11,0) != null){out.print("value=\"" + checks.getData(11,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(11,1) != null){out.print("value=\"" + checks.getData(11,1) + "\"");}%> >
+									<select name="111" id="unit10" required <% if (checks.getData(11,1) != null){out.print("value=\"" + checks.getData(11,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -418,7 +595,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="70" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(7,0) != null){out.print("value=\"" + checks.getData(7,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(7,1) != null){out.print("value=\"" + checks.getData(7,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="71" id="unit6" required <% if (checks.getData(7,1) != null){out.print("value=\"" + checks.getData(7,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -433,7 +612,7 @@
                                 </td>
                                 <td>
                                     <input type="text" name="120" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(12,0) != null){out.print("value=\"" + checks.getData(12,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(12,1) != null){out.print("value=\"" + checks.getData(12,1) + "\"");}%> >
+									<select name="121" id="unit11" required <% if (checks.getData(12,1) != null){out.print("value=\"" + checks.getData(12,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -475,7 +654,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="80" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(8,0) != null){out.print("value=\"" + checks.getData(8,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(8,1) != null){out.print("value=\"" + checks.getData(8,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="81" id="unit7" required <% if (checks.getData(8,1) != null){out.print("value=\"" + checks.getData(8,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -490,7 +671,7 @@
                                 </td>
                                 <td>
                                     <input type="text" name="130" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(13,0) != null){out.print("value=\"" + checks.getData(13,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(13,1) != null){out.print("value=\"" + checks.getData(13,1) + "\"");}%> >
+									<select name="131" id="unit12" required <% if (checks.getData(13,1) != null){out.print("value=\"" + checks.getData(13,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -533,7 +714,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="90" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(9,0) != null){out.print("value=\"" + checks.getData(9,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(9,1) != null){out.print("value=\"" + checks.getData(9,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="91" id="unit8" required <% if (checks.getData(9,1) != null){out.print("value=\"" + checks.getData(9,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -548,7 +731,7 @@
                                 </td>
                                 <td>
                                     <input type="text" name="140" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(14,0) != null){out.print("value=\"" + checks.getData(14,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(14,1) != null){out.print("value=\"" + checks.getData(14,1) + "\"");}%> >
+									<select name="141" id="unit13" required <% if (checks.getData(14,1) != null){out.print("value=\"" + checks.getData(14,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -599,7 +782,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="150" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(15,0) != null){out.print("value=\"" + checks.getData(15,0) + "\"");}%> /><!-- 1 decimal places -->
-									<select required <% if (checks.getData(15,1) != null){out.print("value=\"" + checks.getData(15,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="151" id="unit14" required <% if (checks.getData(15,1) != null){out.print("value=\"" + checks.getData(15,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -630,7 +815,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="160" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(16,0) != null){out.print("value=\"" + checks.getData(16,0) + "\"");}%> /><!-- 3 significant figures, 2 decimal places -->
-									<select required <% if (checks.getData(16,1) != null){out.print("value=\"" + checks.getData(16,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="161" id="unit15" required <% if (checks.getData(16,1) != null){out.print("value=\"" + checks.getData(16,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -664,10 +851,14 @@
                                 <th>
                                 </th>
                                 <th>
-                                    Total Volume of Liquid in Beaker
+                                    Total Volume of <br>
+                                    Liquid in Beaker
                                 </th>
                                 <th>
-                                    Total Weight of Liquid in Beaker
+                                </th>
+                                <th>
+                                    Total Weight of <br>
+                                    Liquid in Beaker
                                 </th>
                             </tr>
                             <tr>
@@ -676,7 +867,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="170" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(17,0) != null){out.print("value=\"" + checks.getData(17,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(17,1) != null){out.print("value=\"" + checks.getData(17,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="171" id="unit16" required <% if (checks.getData(17,1) != null){out.print("value=\"" + checks.getData(17,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -688,7 +881,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="210" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(21,0) != null){out.print("value=\"" + checks.getData(21,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(21,1) != null){out.print("value=\"" + checks.getData(21,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="211" id="unit20" required <% if (checks.getData(21,1) != null){out.print("value=\"" + checks.getData(21,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -729,7 +924,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="180" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(18,0) != null){out.print("value=\"" + checks.getData(18,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(18,1) != null){out.print("value=\"" + checks.getData(18,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="181" id="unit17" required <% if (checks.getData(18,1) != null){out.print("value=\"" + checks.getData(18,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -741,7 +938,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="220" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(22,0) != null){out.print("value=\"" + checks.getData(22,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(22,1) != null){out.print("value=\"" + checks.getData(22,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="221" id="unit21" required <% if (checks.getData(22,1) != null){out.print("value=\"" + checks.getData(22,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -782,7 +981,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="190" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(19,0) != null){out.print("value=\"" + checks.getData(19,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(19,1) != null){out.print("value=\"" + checks.getData(19,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="191" id="unit18" required <% if (checks.getData(19,1) != null){out.print("value=\"" + checks.getData(19,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -794,7 +995,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="230" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(23,0) != null){out.print("value=\"" + checks.getData(23,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(23,1) != null){out.print("value=\"" + checks.getData(23,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="231" id="unit22" required <% if (checks.getData(23,1) != null){out.print("value=\"" + checks.getData(23,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -835,7 +1038,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="200" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(20,0) != null){out.print("value=\"" + checks.getData(20,0) + "\"");}%> /><!-- 2 decimal places -->
-									<select required <% if (checks.getData(20,1) != null){out.print("value=\"" + checks.getData(20,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="201" id="unit19" required <% if (checks.getData(20,1) != null){out.print("value=\"" + checks.getData(20,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -847,7 +1052,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="240" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(24,0) != null){out.print("value=\"" + checks.getData(24,0) + "\"");}%> /><!-- 4 decimal places -->
-									<select required <% if (checks.getData(24,1) != null){out.print("value=\"" + checks.getData(24,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="241" id="unit23" required <% if (checks.getData(24,1) != null){out.print("value=\"" + checks.getData(24,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
@@ -888,7 +1095,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="250" pattern="\d+\.\d+" title="only decimals" required <% if (checks.getData(25,0) != null){out.print("value=\"" + checks.getData(25,0) + "\"");}%> />
-									<select required <% if (checks.getData(25,1) != null){out.print("value=\"" + checks.getData(25,1) + "\"");}%> >
+								</td>
+                                <td>	
+									<select name="251" id="unit24" required <% if (checks.getData(25,1) != null){out.print("value=\"" + checks.getData(25,1) + "\"");}%> >
 										<option value=""></option>
 										<option value="g">g</option>
 										<option value="kg">kg</option>
