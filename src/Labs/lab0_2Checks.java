@@ -113,7 +113,7 @@ public class lab0_2Checks extends inputChecks
         }
     }
     
-    public void gradeLab()
+    public void gradeLab(int labNumber, String userid, String courseid)
     {
     	double gradeTotal = 0.0; //stores total grade
 		double sigFigScore = 1.0; //score for correct significant figure
@@ -219,5 +219,7 @@ public class lab0_2Checks extends inputChecks
     			}
     		}
     	}
+    	
+    	//submit(labNumber, userid, courseid, gradeTotal);
     }
 }
