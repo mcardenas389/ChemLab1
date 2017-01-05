@@ -1,8 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="Labs.lab0_1Checks" %>
 <%@ page import="Labs.GradeLogistics" %>
 <%@ page import="Labs.Helper" %>
-<%@ page import="Labs.DataLoader" %>>
+<%@ page import="Labs.DataLoader" %>
 <%@ page import="blackboard.platform.context.Context" %>
 <%@ page import="blackboard.platform.context.ContextManager" %>
 <%@ page import="blackboard.platform.context.ContextManagerFactory" %>
@@ -21,17 +20,17 @@
  <%@ taglib uri="/bbData" prefix="bbData"%> 
  <%@ taglib uri="/bbNG" prefix="bbNG"%>
  <bbNG:learningSystemPage 
-	title="LAB 1"
+	title="LAB 2"
 	ctxId="ctx">
 
 	<bbNG:pageHeader>
 		<bbNG:breadcrumbBar environment="COURSE"
 			navItem="ycdb-chem109-nav-LabDebug" >
 				<bbNG:breadcrumb title="Home" href="lab0_1i.jsp?course_id=@X@course.pk_string@X@&user_id=@X@user.pk_string@X@" />
-			<bbNG:breadcrumb> Lab 1 </bbNG:breadcrumb>
+			<bbNG:breadcrumb> Lab 2 </bbNG:breadcrumb>
 		</bbNG:breadcrumbBar>
 		<bbNG:pageTitleBar>
-			Welcome to Chem 109 Lab 1
+			Welcome to Chem 109 Lab 2
 		</bbNG:pageTitleBar>
 	</bbNG:pageHeader>
 
@@ -44,7 +43,6 @@
   	User u = ctx.getUser();
  	String userid = "";
  	DataLoader loader = new DataLoader();
-	lab0_1Checks checks;
 	Helper h = new Helper();
   	String courseid = request.getParameter("course_id");
   	String button = null;
@@ -81,7 +79,7 @@
     }
  	
  	//load lab data to be used to populate the form
- 	String[] labData = loader.loadData(tableName, 1, userid, courseid);
+ 	String[] labData = loader.loadData(tableName, 2, userid, courseid);
  	String[][] data = h.convertTo2DArray(dataX, dataY, labData[0]);
  	String[][] isCorrect = h.convertTo2DArray(dataX, dataY, labData[1]);
  	String[][] error = h.convertTo2DArray(dataX, dataY, labData[2]);
@@ -94,7 +92,7 @@
 	</head>
 	<body>
 		<fieldset class="fieldset-auto-width">
-            <legend>Lab 2: Volume Masurements and the Determination of Density</legend>
+            <legend>Lab 2: Volume Measurements and the Determination of Density</legend>
             <%
 	            
             %>
@@ -142,7 +140,7 @@
 							<th>Unit</th>
 							<tr>
 								<td>
-									Weight of unkown metal
+									Weight of unknown metal
 								</td>
 								<td>
 									<%=data[1][0]%>
@@ -220,7 +218,7 @@
 							</tr>
 							<tr>
 								<td>
-									Final graduate cylinder reading (with unkown metal)
+									Final graduate cylinder reading (with unknown metal)
 								</td>
 								<td>
 									<%=data[3][0]%>
